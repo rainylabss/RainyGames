@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clover — Technology, naturally.</title>
+
+<style>
+/* =========================
+   CLOVER — GLOBAL
+========================= */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+    background: #ffffff;
+    color: #111111;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+button {
+    font: inherit;
+}
+
+/* =========================
+   NAVIGATION
+========================= */
+
+.navbar {
+    position: sticky;
+    top: 0;
+    z-index: 999;
+    height: 54px;
+    background: rgba(255,255,255,0.88);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid #eeeeee;
+}
+
+.nav-inner {
+    max-width: 1100px;
+    height: 100%;
+    margin: auto;
+    padding: 0 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo {
+    font-size: 21px;
+    font-weight: 800;
+    letter-spacing: -1px;
+}
+
+.logo span {
+    color: #35a653;
+}
+
+.nav-links {
+    display: flex;
+    gap: 28px;
+    font-size: 13px;
+}
+
+.nav-links a {
+    color: #222;
+    transition: opacity .2s;
+}
+
+.nav-links a:hover {
+    opacity: .5;
+}
+
+.nav-icons {
+    display: flex;
+    gap: 18px;
+    font-size: 18px;
+}
+
+/* =========================
+   HERO
+========================= */
+
+.hero {
+    min-height: 720px;
+    padding: 120px 20px 80px;
+    text-align: center;
+
+    background:
+        radial-gradient(circle at 50% 20%, #dff8e5, transparent 40%),
+        linear-gradient(#f8fff9, #ffffff);
+}
+
+.hero-small {
+    color: #35a653;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.hero h1 {
+    font-size: clamp(55px, 9vw, 100px);
+    line-height: .95;
+    letter-spacing: -6px;
+    margin-bottom: 25px;
+}
+
+.hero p {
+    max-width: 650px;
+    margin: auto;
+    color: #666;
+    font-size: 23px;
+    line-height: 1.4;
+}
+
+.buttons {
+    margin-top: 32px;
+}
+
+.btn {
+    display: inline-block;
+    background: #111;
+    color: white;
+    padding: 14px 25px;
+    border-radius: 28px;
+    font-size: 15px;
+    font-weight: 650;
+    transition: transform .2s, opacity .2s;
+}
+
+.btn:hover {
+    transform: scale(1.04);
+    opacity: .9;
+}
+
+.btn.green {
+    background: #35a653;
+}
+
+/* =========================
+   PRODUCT HERO
+========================= */
+
+.product-section {
+    text-align: center;
+    padding: 100px 20px;
+    border-top: 10px solid #f5f5f5;
+}
+
+.product-section h2 {
+    font-size: clamp(45px, 7vw, 72px);
+    letter-spacing: -4px;
+    margin-bottom: 12px;
+}
+
+.product-section > p {
+    color: #666;
+    font-size: 20px;
+}
+
+.product-buttons {
+    margin-top: 28px;
+}
+
+.product-buttons a {
+    margin: 0 5px;
+}
+
+/* =========================
+   PHONE
+========================= */
+
+.phone-stage {
+    margin: 70px auto 0;
+    max-width: 850px;
+    height: 430px;
+
+    border-radius: 45px;
+
+    background:
+        radial-gradient(circle at 50% 40%, #a9eeb9, transparent 40%),
+        linear-gradient(135deg, #112117, #55b86e);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    box-shadow: 0 30px 80px rgba(0,0,0,.18);
+}
+
+.phone {
+    width: 205px;
+    height: 365px;
+
+    border-radius: 42px;
+    border: 8px solid #151515;
+
+    background:
+        radial-gradient(circle at 30% 25%, #ffffff, transparent 20%),
+        linear-gradient(145deg,#d8ffe0,#4db86a);
+
+    position: relative;
+
+    box-shadow:
+        0 30px 50px rgba(0,0,0,.35),
+        inset 0 0 20px rgba(255,255,255,.5);
+}
+
+.phone::before {
+    content: "";
+    position: absolute;
+
+    width: 75px;
+    height: 22px;
+
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    background: #111;
+    border-radius: 20px;
+}
+
+.phone-logo {
+    position: absolute;
+    inset: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 90px;
+    font-weight: 900;
+    color: white;
+}
+
+/* =========================
+   PRODUCT GRID
+========================= */
+
+.products {
+    max-width: 1150px;
+    margin: auto;
+    padding: 18px;
+
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+}
+
+.card {
+    min-height: 500px;
+    border-radius: 30px;
+    padding: 55px 30px;
+
+    background: #f5f5f7;
+    text-align: center;
+
+    overflow: hidden;
+}
+
+.card.dark {
+    background: #111;
+    color: white;
+}
+
+.card h3 {
+    font-size: 40px;
+    letter-spacing: -2px;
+    margin-bottom: 10px;
+}
+
+.card p {
+    color: #666;
+    font-size: 18px;
+    max-width: 420px;
+    margin: auto;
+}
+
+.card.dark p {
+    color: #aaa;
+}
+
+.card-button {
+    margin-top: 25px;
+}
+
+.card-visual {
+    height: 270px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* =========================
+   LAPTOP
+========================= */
+
+.laptop {
+    width: 350px;
+    max-width: 85%;
+}
+
+.laptop-screen {
+    height: 205px;
+
+    background: white;
+    border: 8px solid #333;
+    border-radius: 15px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 75px;
+    font-weight: 900;
+    color: #42a95f;
+
+    box-shadow: 0 20px 35px rgba(0,0,0,.2);
+}
+
+.laptop-base {
+    height: 15px;
+    width: 115%;
+    margin-left: -7.5%;
+
+    background: #bbb;
+    border-radius: 0 0 30px 30px;
+}
+
+/* =========================
+   WATCH
+========================= */
+
+.watch {
+    width: 145px;
+    height: 180px;
+
+    border-radius: 40px;
+    border: 15px solid #222;
+
+    background: linear-gradient(135deg,#dfffe5,#4db66a);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: white;
+    font-size: 25px;
+    font-weight: 800;
+
+    box-shadow: 0 25px 40px rgba(0,0,0,.25);
+}
+
+/* =========================
+   BUDS
+========================= */
+
+.buds {
+    display: flex;
+    gap: 35px;
+}
+
+.bud {
+    width: 70px;
+    height: 120px;
+
+    background: white;
+    border-radius: 50px;
+
+    box-shadow: 0 15px 30px rgba(0,0,0,.2);
+
+    position: relative;
+}
+
+.bud::after {
+    content: "";
+
+    position: absolute;
+
+    width: 20px;
+    height: 50px;
+
+    background: white;
+
+    bottom: -25px;
+    left: 25px;
+
+    border-radius: 20px;
+}
+
+/* =========================
+   AI
+========================= */
+
+.ai-section {
+    margin-top: 18px;
+
+    padding: 110px 20px;
+
+    text-align: center;
+
+    background:
+        radial-gradient(circle at 50% 40%, #4fb96c, transparent 35%),
+        #08110b;
+
+    color: white;
+}
+
+.ai-section h2 {
+    font-size: clamp(50px,8vw,90px);
+    letter-spacing: -5px;
+}
+
+.ai-section p {
+    max-width: 650px;
+    margin: 20px auto;
+
+    color: #c6d2c9;
+    font-size: 20px;
+    line-height: 1.5;
+}
+
+.ai-orb {
+    width: 180px;
+    height: 180px;
+
+    margin: 50px auto;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(circle at 35% 30%, white, #67d483 25%, #19703a 70%);
+
+    box-shadow:
+        0 0 80px rgba(76,203,109,.6),
+        0 30px 60px rgba(0,0,0,.5);
+}
+
+/* =========================
+   HOME
+========================= */
+
+.home-section {
+    padding: 110px 20px;
+    text-align: center;
+}
+
+.home-section h2 {
+    font-size: 60px;
+    letter-spacing: -4px;
+}
+
+.home-section p {
+    color: #666;
+    font-size: 20px;
+    margin: 15px auto 40px;
+}
+
+.home-icons {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+}
+
+.home-device {
+    width: 120px;
+    height: 120px;
+
+    border-radius: 30px;
+
+    background: #f2f2f4;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 45px;
+}
+
+/* =========================
+   COMPANY
+========================= */
+
+.company {
+    background: #f5f5f7;
+    padding: 110px 20px;
+    text-align: center;
+}
+
+.company h2 {
+    font-size: 55px;
+    letter-spacing: -3px;
+}
+
+.company p {
+    max-width: 700px;
+    margin: 25px auto;
+
+    color: #666;
+    font-size: 19px;
+    line-height: 1.6;
+}
+
+/* =========================
+   STORE
+========================= */
+
+.store {
+    padding: 100px 20px;
+    text-align: center;
+}
+
+.store h2 {
+    font-size: 60px;
+    letter-spacing: -4px;
+}
+
+.store p {
+    color: #666;
+    font-size: 20px;
+    margin: 15px;
+}
+
+.store-grid {
+    max-width: 1000px;
+    margin: 50px auto;
+
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 18px;
+}
+
+.store-item {
+    padding: 30px;
+    background: #f5f5f7;
+    border-radius: 25px;
+}
+
+.store-item h3 {
+    font-size: 25px;
+}
+
+.price {
+    margin: 12px 0;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+footer {
+    background: #f5f5f7;
+    padding: 45px 20px;
+    color: #666;
+    font-size: 13px;
+}
+
+.footer-inner {
+    max-width: 1100px;
+    margin: auto;
+}
+
+.footer-top {
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 25px;
+    margin-bottom: 25px;
+}
+
+.footer-links {
+    display: flex;
+    gap: 25px;
+    flex-wrap: wrap;
+}
+
+.footer-links a:hover {
+    text-decoration: underline;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:750px) {
+
+    .nav-links {
+        display: none;
+    }
+
+    .hero {
+        min-height: 620px;
+        padding-top: 90px;
+    }
+
+    .hero h1 {
+        letter-spacing: -4px;
+    }
+
+    .products {
+        grid-template-columns: 1fr;
+    }
+
+    .card {
+        min-height: 430px;
+    }
+
+    .store-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .phone-stage {
+        height: 350px;
+    }
+
+    .phone {
+        transform: scale(.82);
+    }
+
+    .product-section h2 {
+        letter-spacing: -3px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- =========================
+     NAV
+========================= -->
+
+<nav class="navbar">
+<div class="nav-inner">
+
+    <a href="#" class="logo">
+        <span>🍀</span> Clover
+    </a>
+
+    <div class="nav-links">
+        <a href="#phone">Clover One</a>
+        <a href="#products">Products</a>
+        <a href="#ai">Clover AI</a>
+        <a href="#home">Home</a>
+        <a href="#store">Store</a>
+        <a href="#about">About</a>
+    </div>
+
+    <div class="nav-icons">
+        <span>⌕</span>
+        <span>🛍</span>
+    </div>
+
+</div>
+</nav>
+
+
+<!-- =========================
+     HERO
+========================= -->
+
+<section class="hero">
+
+    <div class="hero-small">
+        New from Clover
+    </div>
+
+    <h1>
+        Clover One.
+    </h1>
+
+    <p>
+        A phone designed to make everyday technology feel
+        beautifully simple.
+    </p>
+
+    <div class="buttons">
+        <a href="#phone" class="btn">
+            Learn more →
+        </a>
+    </div>
+
+</section>
+
+
+<!-- =========================
+     CLOVER ONE
+========================= -->
+
+<section class="product-section" id="phone">
+
+    <h2>
+        Clover One
+    </h2>
+
+    <p>
+        Powerful. Personal. Effortlessly Clover.
+    </p>
+
+    <div class="product-buttons">
+        <a class="btn" href="#store">
+            Buy
+        </a>
+
+        <a class="btn green" href="#products">
+            Explore
+        </a>
+    </div>
+
+    <div class="phone-stage">
+
+        <div class="phone">
+            <div class="phone-logo">
+                C
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     PRODUCTS
+========================= -->
+
+<section id="products">
+
+<div class="products">
+
+    <!-- CLOVERBOOK -->
+
+    <div class="card">
+
+        <h3>
+            CloverBook
+        </h3>
+
+        <p>
+            Big ideas need a little more room.
+        </p>
+
+        <div class="card-visual">
+
+            <div class="laptop">
+
+                <div class="laptop-screen">
+                    C
+                </div>
+
+                <div class="laptop-base"></div>
+
+            </div>
+
+        </div>
+
+        <a href="#store" class="btn">
+            Explore CloverBook →
+        </a>
+
+    </div>
+
+
+    <!-- WATCH -->
+
+    <div class="card dark">
+
+        <h3>
+            Clover Watch
+        </h3>
+
+        <p>
+            Your day. At a glance.
+        </p>
+
+        <div class="card-visual">
+
+            <div class="watch">
+                10:09
+            </div>
+
+        </div>
+
+        <a href="#store" class="btn green">
+            Explore Watch →
+        </a>
+
+    </div>
+
+
+    <!-- BUDS -->
+
+    <div class="card">
+
+        <h3>
+            Clover Buds
+        </h3>
+
+        <p>
+            Small size. Huge sound.
+        </p>
+
+        <div class="card-visual">
+
+            <div class="buds">
+
+                <div class="bud"></div>
+                <div class="bud"></div>
+
+            </div>
+
+        </div>
+
+        <a href="#store" class="btn">
+            Explore Buds →
+        </a>
+
+    </div>
+
+
+    <!-- HOME -->
+
+    <div class="card dark">
+
+        <h3>
+            Clover Home
+        </h3>
+
+        <p>
+            Your home, working together.
+        </p>
+
+        <div class="card-visual">
+
+            <div style="font-size:120px;">
+                ⌂
+            </div>
+
+        </div>
+
+        <a href="#home" class="btn green">
+            Discover Home →
+        </a>
+
+    </div>
+
+</div>
+
+</section>
+
+
+<!-- =========================
+     CLOVER AI
+========================= -->
+
+<section class="ai-section" id="ai">
+
+    <h2>
+        Meet Clover AI.
+    </h2>
+
+    <p>
+        A smart assistant built into Clover devices.
+        Ask questions, organise your day, create ideas,
+        control your home and more.
+    </p>
+
+    <div class="ai-orb"></div>
+
+    <a href="#store" class="btn green">
+        Discover Clover AI →
+    </a>
+
+</section>
+
+
+<!-- =========================
+     CLOVER HOME
+========================= -->
+
+<section class="home-section" id="home">
+
+    <h2>
+        Welcome home.
+    </h2>
+
+    <p>
+        Clover Home connects your devices in one simple system.
+    </p>
+
+    <div class="home-icons">
+
+        <div class="home-device">
+            💡
+        </div>
+
+        <div class="home-device">
+            📺
+        </div>
+
+        <div class="home-device">
+            🌡️
+        </div>
+
+        <div class="home-device">
+            🔒
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     ABOUT
+========================= -->
+
+<section class="company" id="about">
+
+    <h2>
+        Technology, naturally.
+    </h2>
+
+    <p>
+        Clover is a fictional technology company built around
+        one simple idea: technology should be powerful without
+        feeling complicated.
+    </p>
+
+    <p>
+        From phones and computers to smart homes and AI,
+        Clover creates products that are designed to work
+        beautifully together.
+    </p>
+
+</section>
+
+
+<!-- =========================
+     STORE
+========================= -->
+
+<section class="store" id="store">
+
+    <h2>
+        The Clover Store
+    </h2>
+
+    <p>
+        Choose your next Clover.
+    </p>
+
+    <div class="store-grid">
+
+        <div class="store-item">
+
+            <h3>
+                Clover One
+            </h3>
+
+            <div class="price">
+                £799
+            </div>
+
+            <p>
+                From
+            </p>
+
+            <button class="btn green"
+            onclick="addToCart('Clover One')">
+                Add to bag
+            </button>
+
+        </div>
+
+
+        <div class="store-item">
+
+            <h3>
+                CloverBook
+            </h3>
+
+            <div class="price">
+                £999
+            </div>
+
+            <p>
+                From
+            </p>
+
+            <button class="btn green"
+            onclick="addToCart('CloverBook')">
+                Add to bag
+            </button>
+
+        </div>
+
+
+        <div class="store-item">
+
+            <h3>
+                Clover Watch
+            </h3>
+
+            <div class="price">
+                £299
+            </div>
+
+            <p>
+                From
+            </p>
+
+            <button class="btn green"
+            onclick="addToCart('Clover Watch')">
+                Add to bag
+            </button>
+
+        </div>
+
+
+        <div class="store-item">
+
+            <h3>
+                Clover Buds
+            </h3>
+
+            <div class="price">
+                £149
+            </div>
+
+            <p>
+                From
+            </p>
+
+            <button class="btn green"
+            onclick="addToCart('Clover Buds')">
+                Add to bag
+            </button>
+
+        </div>
+
+
+        <div class="store-item">
+
+            <h3>
+                Clover Home
+            </h3>
+
+            <div class="price">
+                £199
+            </div>
+
+            <p>
+                From
+            </p>
+
+            <button class="btn green"
+            onclick="addToCart('Clover Home')">
+                Add to bag
+            </button>
+
+        </div>
+
+
+        <div class="store-item">
+
+            <h3>
+                Clover AI
+            </h3>
+
+            <div class="price">
+                £0
+            </div>
+
+            <p>
+                Included with Clover
+            </p>
+
+            <button class="btn green"
+            onclick="addToCart('Clover AI')">
+                Learn more
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     FOOTER
+========================= -->
+
+<footer>
+
+<div class="footer-inner">
+
+    <div class="footer-top">
+        Clover is a fictional technology company and this
+        website is a fictional business simulation.
+    </div>
+
+    <div class="footer-links">
+
+        <a href="#about">About Clover</a>
+
+        <a href="#products">Products</a>
+
+        <a href="#store">Store</a>
+
+        <a href="#ai">Clover AI</a>
+
+        <a href="#home">Clover Home</a>
+
+    </div>
+
+    <br>
+
+    © 2026 Clover. All rights reserved.
+
+</div>
+
+</footer>
+
+
+<!-- =========================
+     JAVASCRIPT
+========================= -->
+
+<script>
+
+let cart = [];
+
+function addToCart(product) {
+
+    cart.push(product);
+
+    alert(
+        product +
+        " has been added to your Clover bag! 🍀\n\n" +
+        "Items in bag: " +
+        cart.length
+    );
+
+}
+
+</script>
+
+</body>
+</html>
