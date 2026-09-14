@@ -3,823 +3,1153 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RainyMusic</title>
+
+<title>RainyGames — Free Browser Games</title>
+<meta name="description" content="RainyGames is a free browser gaming platform with racing, car, arcade, puzzle, sports, action and strategy games.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://rainylabss.github.io/RainyGames/">
+
+<meta property="og:title" content="RainyGames — Free Browser Games">
+<meta property="og:description" content="Play hundreds of free browser games on RainyGames.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://rainylabss.github.io/RainyGames/">
 
 <style>
 * {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --bg: #08090d;
+    --panel: #11131a;
+    --panel2: #171a23;
+    --border: #252936;
+    --text: #f5f7fb;
+    --muted: #9298a8;
+    --accent: #6d5dfc;
+    --accent2: #8b7cff;
+}
+
+html {
+    scroll-behavior: smooth;
 }
 
 body {
-  font-family: Arial, Helvetica, sans-serif;
-  background: #090909;
-  color: white;
-  min-height: 100vh;
-  padding-bottom: 95px;
+    font-family: Inter, Arial, Helvetica, sans-serif;
+    background:
+        radial-gradient(circle at 80% -10%, rgba(109,93,252,.18), transparent 30%),
+        radial-gradient(circle at 10% 20%, rgba(60,100,255,.08), transparent 25%),
+        var(--bg);
+    color: var(--text);
+    min-height: 100vh;
 }
 
-header {
-  height: 70px;
-  background: #111;
-  display: flex;
-  align-items: center;
-  padding: 0 22px;
-  position: sticky;
-  top: 0;
-  z-index: 20;
-  border-bottom: 1px solid #222;
+button,
+input {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+.header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    height: 72px;
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    padding: 0 5%;
+    background: rgba(8,9,13,.86);
+    backdrop-filter: blur(18px);
+    border-bottom: 1px solid rgba(255,255,255,.06);
 }
 
 .logo {
-  font-size: 25px;
-  font-weight: 800;
-  margin-right: 25px;
+    font-size: 25px;
+    font-weight: 900;
+    letter-spacing: -1.5px;
+    white-space: nowrap;
 }
 
 .logo span {
-  color: #1ed760;
+    color: var(--accent2);
+}
+
+.nav {
+    display: flex;
+    gap: 25px;
+}
+
+.nav button {
+    background: none;
+    border: 0;
+    color: #aeb3c1;
+    font-weight: 700;
+}
+
+.nav button:hover {
+    color: white;
 }
 
 .search {
-  flex: 1;
-  max-width: 500px;
+    margin-left: auto;
+    position: relative;
+    width: 280px;
 }
 
 .search input {
-  width: 100%;
-  background: #242424;
-  border: none;
-  outline: none;
-  color: white;
-  padding: 13px 18px;
-  border-radius: 25px;
-  font-size: 15px;
+    width: 100%;
+    background: #151821;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    color: white;
+    padding: 12px 15px;
+    outline: none;
 }
 
-.search input::placeholder {
-  color: #aaa;
-}
-
-main {
-  max-width: 1100px;
-  margin: auto;
-  padding: 30px 22px;
+.search input:focus {
+    border-color: var(--accent);
 }
 
 .hero {
-  background: linear-gradient(135deg, #202020, #101010);
-  border-radius: 18px;
-  padding: 35px;
-  margin-bottom: 30px;
+    width: 90%;
+    max-width: 1400px;
+    margin: 32px auto 45px;
+    min-height: 390px;
+    border-radius: 24px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center;
+    background:
+        linear-gradient(90deg, rgba(8,9,13,.98) 0%, rgba(8,9,13,.82) 43%, rgba(8,9,13,.12) 100%),
+        radial-gradient(circle at 75% 50%, #5145d8, #16182b 45%, #0d0e14 75%);
+    border: 1px solid var(--border);
+    box-shadow: 0 30px 100px rgba(0,0,0,.4);
+}
+
+.hero-content {
+    padding: 55px;
+    max-width: 650px;
+}
+
+.hero-label {
+    color: #a69dff;
+    font-size: 13px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
 }
 
 .hero h1 {
-  font-size: 42px;
-  margin-bottom: 10px;
+    font-size: clamp(42px, 7vw, 76px);
+    line-height: .95;
+    letter-spacing: -4px;
+    margin-bottom: 18px;
 }
 
 .hero p {
-  color: #aaa;
-  font-size: 16px;
+    color: #b5bac8;
+    font-size: 17px;
+    line-height: 1.6;
+    margin-bottom: 28px;
 }
 
-.section-title {
-  font-size: 23px;
-  margin-bottom: 18px;
+.play-main {
+    background: white;
+    color: #08090d;
+    border: 0;
+    padding: 14px 25px;
+    border-radius: 11px;
+    font-weight: 900;
+    transition: .2s;
 }
 
-.songs {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+.play-main:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 35px rgba(255,255,255,.15);
 }
 
-.song {
-  display: flex;
-  align-items: center;
-  padding: 10px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.15s;
+.container {
+    width: 90%;
+    max-width: 1400px;
+    margin: auto;
 }
 
-.song:hover {
-  background: #1b1b1b;
+.section {
+    margin-bottom: 48px;
 }
 
-.song.active {
-  background: #181818;
+.section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 17px;
 }
 
-.cover {
-  width: 55px;
-  height: 55px;
-  border-radius: 6px;
-  object-fit: cover;
-  background: #292929;
-  margin-right: 15px;
+.section-head h2 {
+    font-size: 24px;
+    letter-spacing: -.7px;
 }
 
-.song-info {
-  flex: 1;
-  min-width: 0;
+.section-head button {
+    background: none;
+    border: 0;
+    color: #9e96ff;
+    font-weight: 800;
 }
 
-.song-title {
-  font-size: 16px;
-  margin-bottom: 5px;
+.games {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 15px;
 }
 
-.artist {
-  color: #999;
-  font-size: 14px;
+.card {
+    min-width: 0;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 15px;
+    overflow: hidden;
+    transition: transform .2s, border-color .2s, box-shadow .2s;
 }
 
-.song-duration {
-  color: #888;
-  margin-right: 15px;
+.card:hover {
+    transform: translateY(-5px);
+    border-color: #454b60;
+    box-shadow: 0 15px 35px rgba(0,0,0,.25);
 }
 
-.like {
-  background: none;
-  border: none;
-  color: #777;
-  font-size: 21px;
-  cursor: pointer;
-  padding: 8px;
+.thumb {
+    aspect-ratio: 16 / 10;
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    padding: 12px;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at 75% 25%, rgba(255,255,255,.25), transparent 20%),
+        linear-gradient(135deg, #302c77, #171923);
 }
 
-.like.liked {
-  color: #1ed760;
+.thumb::after {
+    content: "";
+    position: absolute;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    right: -35px;
+    bottom: -55px;
+    background: rgba(255,255,255,.09);
 }
 
-.empty {
-  color: #777;
-  text-align: center;
-  padding: 35px;
-  display: none;
+.thumb.car {
+    background: linear-gradient(135deg, #5c1c2e, #161822);
 }
 
-/* PLAYER */
-
-.player {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 90px;
-  background: #171717;
-  border-top: 1px solid #292929;
-  display: flex;
-  align-items: center;
-  padding: 10px 20px;
-  z-index: 100;
+.thumb.arcade {
+    background: linear-gradient(135deg, #203b68, #13151d);
 }
 
-.now-playing {
-  width: 25%;
-  display: flex;
-  align-items: center;
-  min-width: 180px;
+.thumb.puzzle {
+    background: linear-gradient(135deg, #28513e, #131a18);
 }
 
-.now-playing img {
-  width: 55px;
-  height: 55px;
-  object-fit: cover;
-  border-radius: 5px;
-  margin-right: 12px;
+.thumb.sports {
+    background: linear-gradient(135deg, #62461e, #171713);
 }
 
-.now-title {
-  font-size: 14px;
-  font-weight: bold;
+.thumb.action {
+    background: linear-gradient(135deg, #5b2520, #171414);
 }
 
-.now-artist {
-  color: #999;
-  font-size: 12px;
-  margin-top: 5px;
+.thumb.idle {
+    background: linear-gradient(135deg, #49306d, #16141b);
 }
 
-.controls-area {
-  flex: 1;
-  max-width: 600px;
-  margin: auto;
+.thumb.strategy {
+    background: linear-gradient(135deg, #243f48, #12181b);
 }
 
-.controls {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 20px;
-  margin-bottom: 7px;
+.thumb.platform {
+    background: linear-gradient(135deg, #24506a, #12191d);
 }
 
-.control {
-  border: none;
-  background: none;
-  color: white;
-  cursor: pointer;
-  font-size: 20px;
+.thumb-title {
+    position: relative;
+    z-index: 2;
+    font-size: 16px;
+    font-weight: 900;
+    text-shadow: 0 2px 8px black;
+}
+
+.card-body {
+    padding: 12px;
+}
+
+.card-title {
+    font-weight: 800;
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.card-meta {
+    display: flex;
+    justify-content: space-between;
+    color: var(--muted);
+    font-size: 11px;
+    margin-top: 7px;
+}
+
+.card-actions {
+    display: flex;
+    gap: 7px;
+    margin-top: 11px;
 }
 
 .play {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  background: white;
-  color: black;
-  font-size: 17px;
+    flex: 1;
+    border: 0;
+    border-radius: 8px;
+    padding: 8px;
+    background: var(--accent);
+    color: white;
+    font-size: 12px;
+    font-weight: 900;
 }
 
-.progress-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.fav {
+    width: 35px;
+    border: 1px solid var(--border);
+    background: #171a23;
+    color: #9ba1b1;
+    border-radius: 8px;
+    font-size: 16px;
 }
 
-.time {
-  font-size: 10px;
-  color: #999;
-  width: 35px;
-  text-align: center;
+.fav.active {
+    color: #a69dff;
+    border-color: #6559d9;
 }
 
-.progress {
-  flex: 1;
-  height: 4px;
-  appearance: none;
-  background: #555;
-  border-radius: 10px;
-  cursor: pointer;
+.category-bar {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    margin-bottom: 30px;
 }
 
-.progress::-webkit-slider-thumb {
-  appearance: none;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: white;
-}
-
-.volume-area {
-  width: 22%;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 8px;
-}
-
-.volume {
-  width: 90px;
-  appearance: none;
-  height: 4px;
-  background: #555;
-  border-radius: 10px;
-}
-
-.volume::-webkit-slider-thumb {
-  appearance: none;
-  width: 11px;
-  height: 11px;
-  border-radius: 50%;
-  background: white;
-}
-
-@media (max-width: 700px) {
-
-  header {
-    padding: 0 15px;
-  }
-
-  .logo {
-    font-size: 21px;
-    margin-right: 12px;
-  }
-
-  .hero {
-    padding: 25px;
-  }
-
-  .hero h1 {
-    font-size: 31px;
-  }
-
-  .song-duration {
+.category-bar::-webkit-scrollbar {
     display: none;
-  }
+}
 
-  .player {
-    height: 115px;
-    padding: 8px 12px;
-    flex-wrap: wrap;
-  }
+.category {
+    white-space: nowrap;
+    border: 1px solid var(--border);
+    background: var(--panel);
+    color: #aeb3c1;
+    padding: 10px 16px;
+    border-radius: 999px;
+    font-weight: 800;
+}
 
-  .now-playing {
-    width: 50%;
-    min-width: 0;
-    height: 50px;
-  }
+.category.active,
+.category:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+}
 
-  .now-playing img {
-    width: 45px;
-    height: 45px;
-  }
+.results {
+    display: none;
+}
 
-  .volume-area {
-    width: 50%;
-    height: 50px;
-  }
+.results.show {
+    display: block;
+}
 
-  .controls-area {
-    order: 3;
-    width: 100%;
-    max-width: none;
-  }
+.no-results {
+    color: var(--muted);
+    padding: 40px;
+    text-align: center;
+    background: var(--panel);
+    border-radius: 15px;
+    border: 1px solid var(--border);
+}
 
-  .controls {
-    margin-bottom: 4px;
-  }
+.footer {
+    margin-top: 80px;
+    border-top: 1px solid var(--border);
+    padding: 35px 5%;
+    color: #777d8c;
+    text-align: center;
+    font-size: 13px;
+}
 
-  .volume {
-    width: 70px;
-  }
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 500;
+    background: rgba(0,0,0,.82);
+    backdrop-filter: blur(12px);
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.modal.show {
+    display: flex;
+}
+
+.modal-box {
+    width: min(1000px, 100%);
+    height: min(700px, 90vh);
+    background: #0d0f15;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-top {
+    height: 55px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 18px;
+    border-bottom: 1px solid var(--border);
+}
+
+.close {
+    border: 0;
+    background: #1b1e27;
+    color: white;
+    border-radius: 8px;
+    width: 35px;
+    height: 35px;
+}
+
+.game-frame {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #888f9e;
+    text-align: center;
+    padding: 30px;
+}
+
+@media (max-width: 1100px) {
+    .games {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (max-width: 750px) {
+    .header {
+        height: auto;
+        min-height: 65px;
+        flex-wrap: wrap;
+        padding: 13px 5%;
+        gap: 15px;
+    }
+
+    .nav {
+        display: none;
+    }
+
+    .search {
+        width: 100%;
+        order: 3;
+    }
+
+    .hero {
+        min-height: 400px;
+    }
+
+    .hero-content {
+        padding: 35px 25px;
+    }
+
+    .hero h1 {
+        letter-spacing: -2px;
+    }
+
+    .games {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .section {
+        margin-bottom: 35px;
+    }
+}
+
+@media (max-width: 420px) {
+    .games {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .card-body {
+        padding: 9px;
+    }
 }
 </style>
 </head>
 
 <body>
 
-<header>
-  <div class="logo">Rainy<span>Music</span></div>
+<header class="header">
+    <div class="logo">RAINY<span>GAMES</span></div>
 
-  <div class="search">
-    <input
-      type="text"
-      id="search"
-      placeholder="What do you want to play?"
-      oninput="searchSongs()"
-    >
-  </div>
+    <nav class="nav">
+        <button onclick="scrollToSection('popular')">Popular</button>
+        <button onclick="scrollToSection('cars')">Cars</button>
+        <button onclick="scrollToSection('new')">New</button>
+        <button onclick="showAll()">All Games</button>
+    </nav>
+
+    <div class="search">
+        <input id="searchInput" type="search" placeholder="Search 200 games..." oninput="searchGames()">
+    </div>
 </header>
 
 <main>
 
-  <section class="hero">
-    <h1>Your music. Your way.</h1>
-    <p>Listen to your music collection with RainyMusic.</p>
-  </section>
+<section class="hero">
+    <div class="hero-content">
+        <div class="hero-label">Featured Game</div>
+        <h1>RainyCrash</h1>
+        <p>
+            Launch your car down insane tracks, hit massive ramps,
+            perform ridiculous stunts and try to beat your best score.
+        </p>
+        <button class="play-main" onclick="launchGame('RainyCrash')">
+            PLAY NOW
+        </button>
+    </div>
+</section>
 
-  <h2 class="section-title">Songs</h2>
+<div class="container">
 
-  <div class="songs" id="songs"></div>
+<div class="category-bar">
+    <button class="category active" onclick="filterCategory('All', this)">All</button>
+    <button class="category" onclick="filterCategory('Cars', this)">Cars</button>
+    <button class="category" onclick="filterCategory('Racing', this)">Racing</button>
+    <button class="category" onclick="filterCategory('Arcade', this)">Arcade</button>
+    <button class="category" onclick="filterCategory('Puzzle', this)">Puzzle</button>
+    <button class="category" onclick="filterCategory('Action', this)">Action</button>
+    <button class="category" onclick="filterCategory('Sports', this)">Sports</button>
+    <button class="category" onclick="filterCategory('Tycoon', this)">Tycoon</button>
+    <button class="category" onclick="filterCategory('Strategy', this)">Strategy</button>
+    <button class="category" onclick="filterCategory('Platform', this)">Platform</button>
+</div>
 
-  <div class="empty" id="empty">
-    No songs found 😭
-  </div>
+<div id="searchResults" class="results">
+    <div class="section-head">
+        <h2>Search Results</h2>
+    </div>
+    <div id="searchGrid" class="games"></div>
+</div>
 
+<section class="section" id="popular">
+    <div class="section-head">
+        <h2>Popular Games</h2>
+        <button onclick="showCategory('Popular')">View All</button>
+    </div>
+    <div id="popularGrid" class="games"></div>
+</section>
+
+<section class="section" id="cars">
+    <div class="section-head">
+        <h2>Popular Car Games</h2>
+        <button onclick="filterCategoryByName('Cars')">View All</button>
+    </div>
+    <div id="carGrid" class="games"></div>
+</section>
+
+<section class="section" id="new">
+    <div class="section-head">
+        <h2>New Games</h2>
+    </div>
+    <div id="newGrid" class="games"></div>
+</section>
+
+<section class="section">
+    <div class="section-head">
+        <h2>Quick Games</h2>
+    </div>
+    <div id="quickGrid" class="games"></div>
+</section>
+
+<section class="section">
+    <div class="section-head">
+        <h2>Recently Played</h2>
+    </div>
+    <div id="recentGrid" class="games"></div>
+</section>
+
+<section class="section">
+    <div class="section-head">
+        <h2>All 200 Games</h2>
+    </div>
+    <div id="allGrid" class="games"></div>
+</section>
+
+</div>
 </main>
 
-<!-- AUDIO ENGINE -->
+<footer class="footer">
+    <strong>RAINYGAMES</strong><br><br>
+    Free browser games. Built by RainyDayLabs.<br><br>
+    More games are added regularly.
+</footer>
 
-<audio id="audio"></audio>
-
-<!-- PLAYER -->
-
-<div class="player">
-
-  <div class="now-playing">
-    <img id="nowCover" src="covers/default.jpg" alt="Album cover">
-
-    <div>
-      <div class="now-title" id="nowTitle">Nothing playing</div>
-      <div class="now-artist" id="nowArtist">Choose a song</div>
+<div id="modal" class="modal">
+    <div class="modal-box">
+        <div class="modal-top">
+            <strong id="modalTitle">RainyGames</strong>
+            <button class="close" onclick="closeGame()">X</button>
+        </div>
+        <div id="gameFrame" class="game-frame"></div>
     </div>
-  </div>
-
-  <div class="controls-area">
-
-    <div class="controls">
-
-      <button class="control" onclick="previousSong()">⏮</button>
-
-      <button class="control play" id="playButton" onclick="togglePlay()">▶</button>
-
-      <button class="control" onclick="nextSong()">⏭</button>
-
-    </div>
-
-    <div class="progress-row">
-
-      <span class="time" id="currentTime">0:00</span>
-
-      <input
-        class="progress"
-        id="progress"
-        type="range"
-        min="0"
-        max="100"
-        value="0"
-        step="0.1"
-        oninput="changeProgress()"
-      >
-
-      <span class="time" id="duration">0:00</span>
-
-    </div>
-
-  </div>
-
-  <div class="volume-area">
-
-    <span>🔊</span>
-
-    <input
-      class="volume"
-      id="volume"
-      type="range"
-      min="0"
-      max="1"
-      value="0.8"
-      step="0.01"
-      oninput="changeVolume()"
-    >
-
-  </div>
-
 </div>
 
 <script>
+const games = [
 
-/* =========================================
-   YOUR SONG LIBRARY
-   ========================================= */
+/* CAR / RACING */
 
-const songs = [
+["RainyCrash","Cars","Racing",100],
+["Highway Rush","Cars","Racing",98],
+["Drift Master","Cars","Racing",96],
+["City Driver","Cars","Racing",94],
+["Traffic Racer","Cars","Racing",93],
+["Mega Ramp","Cars","Racing",92],
+["Offroad Driver","Cars","Racing",91],
+["Rally Rush","Cars","Racing",90],
+["Drag Racer","Cars","Racing",89],
+["Formula Rush","Cars","Racing",88],
+["Parking Pro","Cars","Racing",87],
+["Police Pursuit","Cars","Racing",86],
+["Monster Truck","Cars","Racing",85],
+["Canyon Racer","Cars","Racing",84],
+["Loop Master","Cars","Racing",83],
+["Mountain Climb","Cars","Racing",82],
+["Desert Driver","Cars","Racing",81],
+["Street Racer","Cars","Racing",80],
+["Speed Circuit","Cars","Racing",79],
+["Night Racer","Cars","Racing",78],
+["Snow Driver","Cars","Racing",77],
+["Beach Buggy","Cars","Racing",76],
+["Stunt Driver","Cars","Racing",75],
+["Crash Arena","Cars","Racing",74],
+["Wreck Challenge","Cars","Racing",73],
+["Demolition Driver","Cars","Racing",72],
+["Rocket Car","Cars","Racing",71],
+["Skyway Racer","Cars","Racing",70],
+["Impossible Track","Cars","Racing",69],
+["Kart Chaos","Cars","Racing",68],
+["Mini Rally","Cars","Racing",67],
+["Speedway","Cars","Racing",66],
+["Hill Driver","Cars","Racing",65],
+["Turbo Chase","Cars","Racing",64],
+["Road Legends","Cars","Racing",63],
 
-  {
-    title: "My First Song",
-    artist: "RainyMusic",
-    file: "music/song1.mp3",
-    cover: "covers/cover1.jpg"
-  },
+/* ARCADE */
 
-  {
-    title: "Summer",
-    artist: "RainyMusic",
-    file: "music/song2.mp3",
-    cover: "covers/cover2.jpg"
-  },
+["Snake","Arcade","Arcade",97],
+["Space Shooter","Arcade","Arcade",95],
+["Brick Breaker","Arcade","Arcade",94],
+["Endless Runner","Arcade","Arcade",93],
+["Asteroid Attack","Arcade","Arcade",92],
+["Flap Rush","Arcade","Arcade",91],
+["Coin Dash","Arcade","Arcade",90],
+["Laser Dodge","Arcade","Arcade",89],
+["Cannon Ball","Arcade","Arcade",88],
+["Stack It","Arcade","Arcade",87],
+["Color Switch","Arcade","Arcade",86],
+["Block Drop","Arcade","Arcade",85],
+["Neon Dodge","Arcade","Arcade",84],
+["Target Rush","Arcade","Arcade",83],
+["Meteor Run","Arcade","Arcade",82],
+["Bubble Pop","Arcade","Arcade",81],
+["Knife Throw","Arcade","Arcade",80],
+["Jump Master","Arcade","Arcade",79],
+["Rocket Run","Arcade","Arcade",78],
+["Time Attack","Arcade","Arcade",77],
+["Pixel Dash","Arcade","Arcade",76],
+["Orbit","Arcade","Arcade",75],
+["Gravity Flip","Arcade","Arcade",74],
+["Cube Rush","Arcade","Arcade",73],
+["Light Speed","Arcade","Arcade",72],
+["Tap Titans","Arcade","Arcade",71],
+["Bounce","Arcade","Arcade",70],
+["Tunnel Rush","Arcade","Arcade",69],
+["Reaction","Arcade","Arcade",68],
+["Quick Click","Arcade","Arcade",67],
 
-  {
-    title: "Dreams",
-    artist: "RainyMusic",
-    file: "music/song3.mp3",
-    cover: "covers/cover3.jpg"
-  },
+/* PUZZLE */
 
-  {
-    title: "Midnight",
-    artist: "RainyMusic",
-    file: "music/song4.mp3",
-    cover: "covers/cover4.jpg"
-  }
+["2048","Puzzle","Puzzle",96],
+["Mines","Puzzle","Puzzle",94],
+["Memory Match","Puzzle","Puzzle",92],
+["Block Puzzle","Puzzle","Puzzle",91],
+["Word Rush","Puzzle","Puzzle",90],
+["Number Merge","Puzzle","Puzzle",89],
+["Color Match","Puzzle","Puzzle",88],
+["Pipe Connect","Puzzle","Puzzle",87],
+["Maze Master","Puzzle","Puzzle",86],
+["Sudoku","Puzzle","Puzzle",85],
+["Sliding Blocks","Puzzle","Puzzle",84],
+["Tile Match","Puzzle","Puzzle",83],
+["Logic Lines","Puzzle","Puzzle",82],
+["Shape Shift","Puzzle","Puzzle",81],
+["Brain Test","Puzzle","Puzzle",80],
+["Quick Maths","Puzzle","Puzzle",79],
+["Pattern Master","Puzzle","Puzzle",78],
+["Bomb Defuse","Puzzle","Puzzle",77],
+["Jewel Match","Puzzle","Puzzle",76],
+["Box Escape","Puzzle","Puzzle",75],
+["Light Up","Puzzle","Puzzle",74],
+["Number Rush","Puzzle","Puzzle",73],
+["Find It","Puzzle","Puzzle",72],
+["Stack Puzzle","Puzzle","Puzzle",71],
+["Chess","Puzzle","Puzzle",70],
 
+/* ACTION */
+
+["Zombie Escape","Action","Action",95],
+["Ninja Rush","Action","Action",93],
+["Robot Arena","Action","Action",91],
+["Castle Defence","Action","Action",90],
+["Alien Attack","Action","Action",89],
+["Dungeon Run","Action","Action",88],
+["Battle Blocks","Action","Action",87],
+["Sword Dash","Action","Action",86],
+["Boss Rush","Action","Action",85],
+["Space Battle","Action","Action",84],
+["Laser Arena","Action","Action",83],
+["Monster Hunt","Action","Action",82],
+["Shadow Runner","Action","Action",81],
+["Cyber Chase","Action","Action",80],
+["Rocket Battle","Action","Action",79],
+["Tank Arena","Action","Action",78],
+["Hero Quest","Action","Action",77],
+["Defender","Action","Action",76],
+["Alien Escape","Action","Action",75],
+["Battle Rush","Action","Action",74],
+["Survival Zone","Action","Action",73],
+["Target Hunter","Action","Action",72],
+["Danger Zone","Action","Action",71],
+["Robot Escape","Action","Action",70],
+["Final Boss","Action","Action",69],
+
+/* SPORTS */
+
+["Football Rush","Sports","Sports",94],
+["Basketball Pro","Sports","Sports",92],
+["Tennis Challenge","Sports","Sports",90],
+["Mini Golf","Sports","Sports",89],
+["Bowling Pro","Sports","Sports",88],
+["Penalty King","Sports","Sports",87],
+["Free Kick","Sports","Sports",86],
+["Hoop Master","Sports","Sports",85],
+["Golf Rush","Sports","Sports",84],
+["Baseball Blast","Sports","Sports",83],
+["Hockey Shot","Sports","Sports",82],
+["Boxing Arena","Sports","Sports",81],
+["Skate Rush","Sports","Sports",80],
+["Pool Pro","Sports","Sports",79],
+["Darts Master","Sports","Sports",78],
+["Volleyball","Sports","Sports",77],
+["Table Tennis","Sports","Sports",76],
+["Rugby Run","Sports","Sports",75],
+["Ski Sprint","Sports","Sports",74],
+["Climbing Challenge","Sports","Sports",73],
+
+/* TYCOON / IDLE */
+
+["Lemonade Tycoon","Tycoon","Tycoon",90],
+["Bakery Tycoon","Tycoon","Tycoon",89],
+["Cafe Tycoon","Tycoon","Tycoon",88],
+["Hotel Tycoon","Tycoon","Tycoon",87],
+["Airport Tycoon","Tycoon","Tycoon",86],
+["Space Tycoon","Tycoon","Tycoon",85],
+["Factory Tycoon","Tycoon","Tycoon",84],
+["Farm Tycoon","Tycoon","Tycoon",83],
+["Pizza Empire","Tycoon","Tycoon",82],
+["Pet Empire","Tycoon","Tycoon",81],
+["Mining Empire","Tycoon","Tycoon",80],
+["Theme Park Tycoon","Tycoon","Tycoon",79],
+["City Builder","Tycoon","Tycoon",78],
+["Shop Empire","Tycoon","Tycoon",77],
+["Tech Empire","Tycoon","Tycoon",76],
+["Clicker King","Tycoon","Tycoon",75],
+["Cookie Factory","Tycoon","Tycoon",74],
+["Car Factory","Tycoon","Tycoon",73],
+["Island Empire","Tycoon","Tycoon",72],
+["Mega Business","Tycoon","Tycoon",71],
+
+/* PLATFORM */
+
+["Jump Quest","Platform","Platform",88],
+["Super Blocks","Platform","Platform",87],
+["Cave Runner","Platform","Platform",86],
+["Sky Jump","Platform","Platform",85],
+["Pixel Adventure","Platform","Platform",84],
+["Lava Escape","Platform","Platform",83],
+["Ice World","Platform","Platform",82],
+["Forest Run","Platform","Platform",81],
+["Castle Jump","Platform","Platform",80],
+["Cloud Runner","Platform","Platform",79],
+["Gravity Quest","Platform","Platform",78],
+["Robot Jump","Platform","Platform",77],
+["Danger Platform","Platform","Platform",76],
+["Tiny Hero","Platform","Platform",75],
+["Mega Jump","Platform","Platform",74],
+
+/* STRATEGY */
+
+["Tower Defence","Strategy","Strategy",88],
+["Kingdom Builder","Strategy","Strategy",86],
+["Battle Strategy","Strategy","Strategy",84],
+["War Grid","Strategy","Strategy",82],
+["Island Defence","Strategy","Strategy",80],
+["Robot Tactics","Strategy","Strategy",78],
+["Space Command","Strategy","Strategy",76],
+["Castle Wars","Strategy","Strategy",74],
+["Empire Builder","Strategy","Strategy",72],
+["Battlefield","Strategy","Strategy",70],
+
+/* EXTRA GAMES */
+
+["Reaction Test","Arcade","Arcade",95],
+["Typing Speed","Arcade","Arcade",85],
+["Click Challenge","Arcade","Arcade",83],
+["Color Rush","Arcade","Arcade",82],
+["Speed Clicker","Arcade","Arcade",81],
+["Memory Rush","Puzzle","Puzzle",80],
+["Word Master","Puzzle","Puzzle",79],
+["Math Challenge","Puzzle","Puzzle",78],
+["Trivia Rush","Puzzle","Puzzle",77],
+["Guess It","Puzzle","Puzzle",76],
+["Daily Challenge","Arcade","Arcade",98],
+["Score Attack","Arcade","Arcade",90],
+["Endless Road","Cars","Racing",92],
+["Turbo Drift","Cars","Racing",91],
+["Mega Racer","Cars","Racing",90],
+["Track Destroyer","Cars","Racing",89],
+["Road Warrior","Cars","Racing",88],
+["Street Drift","Cars","Racing",87],
+["Super Kart","Cars","Racing",86],
+["Ramp Racer","Cars","Racing",85],
+["Crash Mountain","Cars","Racing",84],
+["Ultimate Driver","Cars","Racing",83],
+["Race Day","Cars","Racing",82],
+["Speed Hunter","Cars","Racing",81],
+["Turbo Track","Cars","Racing",80],
+["Extreme Driver","Cars","Racing",79],
+["Road Runner","Cars","Racing",78],
+["City Chase","Cars","Racing",77],
+["Nitro Rush","Cars","Racing",76],
+["Grand Racer","Cars","Racing",75],
+["Formula X","Cars","Racing",74],
+["Drift City","Cars","Racing",73],
+["Super Driver","Cars","Racing",72],
+["Race Master","Cars","Racing",71],
+["Ultimate Drift","Cars","Racing",70],
+["Rocket Rally","Cars","Racing",69],
+["Street Chase","Cars","Racing",68],
+["Mountain Racer","Cars","Racing",67],
+["Desert Rally","Cars","Racing",66],
+["Sky Racer","Cars","Racing",65],
+["Speed King","Cars","Racing",64],
+["Mega Drift","Cars","Racing",63],
+["Road Rush","Cars","Racing",62],
+["Turbo Driver","Cars","Racing",61],
+["Crash Racer","Cars","Racing",60],
+["Arena Racer","Cars","Racing",59],
+["Fast Lane","Cars","Racing",58],
+["Race Factory","Cars","Racing",57],
+["Drive Zone","Cars","Racing",56],
+["Ultimate Race","Cars","Racing",55]
 ];
 
+const categoryClass = {
+    Cars: "car",
+    Racing: "car",
+    Arcade: "arcade",
+    Puzzle: "puzzle",
+    Action: "action",
+    Sports: "sports",
+    Tycoon: "idle",
+    Strategy: "strategy",
+    Platform: "platform"
+};
 
-/* =========================================
-   PLAYER VARIABLES
-   ========================================= */
+function gameObject(g, index) {
+    return {
+        name: g[0],
+        category: g[1],
+        type: g[2],
+        popularity: g[3],
+        index
+    };
+}
 
-const audio = document.getElementById("audio");
+let gameObjects = games.map(gameObject);
 
-let currentSong = -1;
-let playing = false;
+function makeCard(game) {
+    const favs = JSON.parse(localStorage.getItem("rainyFavs") || "[]");
+    const active = favs.includes(game.name);
+    const css = categoryClass[game.category] || "arcade";
 
+    return `
+        <article class="card">
+            <div class="thumb ${css}">
+                <div class="thumb-title">${game.name}</div>
+            </div>
 
-/* =========================================
-   DISPLAY SONGS
-   ========================================= */
+            <div class="card-body">
+                <div class="card-title">${game.name}</div>
 
-function displaySongs(list = songs) {
+                <div class="card-meta">
+                    <span>${game.category}</span>
+                    <span>★ ${rating(game.popularity)}</span>
+                </div>
 
-  const container = document.getElementById("songs");
+                <div class="card-actions">
+                    <button class="play" onclick="launchGame('${escapeQuotes(game.name)}')">
+                        PLAY
+                    </button>
 
-  container.innerHTML = "";
+                    <button class="fav ${active ? "active" : ""}"
+                        onclick="toggleFav('${escapeQuotes(game.name)}', this)">
+                        ${active ? "★" : "☆"}
+                    </button>
+                </div>
+            </div>
+        </article>
+    `;
+}
 
-  if (list.length === 0) {
-    document.getElementById("empty").style.display = "block";
-    return;
-  }
+function escapeQuotes(text) {
+    return text.replace(/'/g, "\\'");
+}
 
-  document.getElementById("empty").style.display = "none";
+function rating(popularity) {
+    return Math.min(5, Math.max(3.5, (3.5 + popularity / 66))).toFixed(1);
+}
 
-  list.forEach((song) => {
+function render(list, elementId) {
+    const element = document.getElementById(elementId);
 
-    const realIndex = songs.indexOf(song);
-
-    const row = document.createElement("div");
-
-    row.className = "song";
-
-    if (realIndex === currentSong) {
-      row.classList.add("active");
+    if (!list.length) {
+        element.innerHTML = `<div class="no-results">No games found.</div>`;
+        return;
     }
 
-    row.innerHTML = `
+    element.innerHTML = list.map(makeCard).join("");
+}
 
-      <img
-        class="cover"
-        src="${song.cover}"
-        onerror="this.src='covers/default.jpg'"
-      >
+function renderHome() {
+    const popular = [...gameObjects]
+        .sort((a,b) => b.popularity - a.popularity)
+        .slice(0, 12);
 
-      <div class="song-info">
+    const cars = gameObjects
+        .filter(g => g.category === "Cars")
+        .sort((a,b) => b.popularity - a.popularity)
+        .slice(0, 12);
 
-        <div class="song-title">
-          ${song.title}
+    const newest = [...gameObjects]
+        .slice(-12)
+        .reverse();
+
+    const quick = gameObjects
+        .filter(g => ["Arcade","Puzzle"].includes(g.category))
+        .slice(0, 12);
+
+    render(popular, "popularGrid");
+    render(cars, "carGrid");
+    render(newest, "newGrid");
+    render(quick, "quickGrid");
+
+    renderRecent();
+    render(gameObjects, "allGrid");
+}
+
+function toggleFav(name, button) {
+    let favs = JSON.parse(localStorage.getItem("rainyFavs") || "[]");
+
+    if (favs.includes(name)) {
+        favs = favs.filter(x => x !== name);
+        button.classList.remove("active");
+        button.textContent = "☆";
+    } else {
+        favs.push(name);
+        button.classList.add("active");
+        button.textContent = "★";
+    }
+
+    localStorage.setItem("rainyFavs", JSON.stringify(favs));
+}
+
+function launchGame(name) {
+    let recent = JSON.parse(localStorage.getItem("rainyRecent") || "[]");
+
+    recent = recent.filter(x => x !== name);
+    recent.unshift(name);
+    recent = recent.slice(0, 12);
+
+    localStorage.setItem("rainyRecent", JSON.stringify(recent));
+
+    /*
+       When you create a real game folder, the system will try:
+       games/game-name/index.html
+
+       Example:
+       RainyCrash -> games/rainy-crash/index.html
+    */
+
+    const slug = name
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-|-$/g, "");
+
+    if (name === "RainyCrash") {
+        window.location.href = "games/rainy-crash/index.html";
+        return;
+    }
+
+    /*
+       For games that don't exist yet, show a temporary screen.
+       Replace this later with the real game.
+    */
+
+    document.getElementById("modalTitle").textContent = name;
+
+    document.getElementById("gameFrame").innerHTML = `
+        <div>
+            <h2 style="color:white;margin-bottom:12px">${name}</h2>
+            <p>This game is being built for RainyGames.</p>
+            <p style="margin-top:8px;font-size:13px">
+                Game folder: games/${slug}/
+            </p>
         </div>
-
-        <div class="artist">
-          ${song.artist}
-        </div>
-
-      </div>
-
-      <div class="song-duration">
-        —
-      </div>
-
-      <button
-        class="like"
-        onclick="likeSong(event, ${realIndex})"
-        id="like-${realIndex}"
-      >
-        ♡
-      </button>
-
     `;
 
-    row.addEventListener("click", function() {
-      loadSong(realIndex);
+    document.getElementById("modal").classList.add("show");
+    renderRecent();
+}
+
+function closeGame() {
+    document.getElementById("modal").classList.remove("show");
+}
+
+function renderRecent() {
+    const names = JSON.parse(localStorage.getItem("rainyRecent") || "[]");
+
+    const recentGames = names
+        .map(name => gameObjects.find(g => g.name === name))
+        .filter(Boolean);
+
+    if (!recentGames.length) {
+        document.getElementById("recentGrid").innerHTML =
+            `<div class="no-results">Your recently played games will appear here.</div>`;
+        return;
+    }
+
+    render(recentGames, "recentGrid");
+}
+
+function searchGames() {
+    const input = document.getElementById("searchInput");
+    const query = input.value.toLowerCase().trim();
+    const results = document.getElementById("searchResults");
+
+    if (!query) {
+        results.classList.remove("show");
+        return;
+    }
+
+    results.classList.add("show");
+
+    const matches = gameObjects.filter(game =>
+        game.name.toLowerCase().includes(query) ||
+        game.category.toLowerCase().includes(query) ||
+        game.type.toLowerCase().includes(query)
+    );
+
+    render(matches, "searchGrid");
+
+    results.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
     });
-
-    container.appendChild(row);
-
-  });
-
 }
 
+function filterCategory(category, button) {
+    document.querySelectorAll(".category").forEach(b =>
+        b.classList.remove("active")
+    );
 
-/* =========================================
-   LOAD SONG
-   ========================================= */
+    button.classList.add("active");
 
-function loadSong(index) {
+    const results = category === "All"
+        ? gameObjects
+        : gameObjects.filter(g => g.category === category);
 
-  if (index < 0 || index >= songs.length) return;
+    document.getElementById("searchResults").classList.add("show");
+    render(results, "searchGrid");
 
-  currentSong = index;
-
-  const song = songs[index];
-
-  audio.src = song.file;
-
-  document.getElementById("nowTitle").textContent = song.title;
-
-  document.getElementById("nowArtist").textContent = song.artist;
-
-  document.getElementById("nowCover").src = song.cover;
-
-  audio.volume = document.getElementById("volume").value;
-
-  audio.play()
-    .then(() => {
-      playing = true;
-      updatePlayButton();
-    })
-    .catch(() => {
-      playing = false;
-      updatePlayButton();
+    document.getElementById("searchResults").scrollIntoView({
+        behavior: "smooth"
     });
-
-  displaySongs();
-
 }
 
+function filterCategoryByName(category) {
+    const button = [...document.querySelectorAll(".category")]
+        .find(b => b.textContent === category);
 
-/* =========================================
-   PLAY / PAUSE
-   ========================================= */
-
-function togglePlay() {
-
-  if (currentSong === -1) {
-
-    loadSong(0);
-
-    return;
-
-  }
-
-  if (audio.paused) {
-
-    audio.play();
-
-    playing = true;
-
-  } else {
-
-    audio.pause();
-
-    playing = false;
-
-  }
-
-  updatePlayButton();
-
+    if (button) {
+        filterCategory(category, button);
+    }
 }
 
-
-function updatePlayButton() {
-
-  document.getElementById("playButton").textContent =
-    audio.paused ? "▶" : "Ⅱ";
-
+function showAll() {
+    document.getElementById("allGrid").scrollIntoView({
+        behavior: "smooth"
+    });
 }
 
-
-/* =========================================
-   NEXT / PREVIOUS
-   ========================================= */
-
-function nextSong() {
-
-  if (songs.length === 0) return;
-
-  let next = currentSong + 1;
-
-  if (next >= songs.length) {
-    next = 0;
-  }
-
-  loadSong(next);
-
+function showCategory(category) {
+    showAll();
 }
 
-
-function previousSong() {
-
-  if (songs.length === 0) return;
-
-  if (audio.currentTime > 3) {
-
-    audio.currentTime = 0;
-
-    return;
-
-  }
-
-  let previous = currentSong - 1;
-
-  if (previous < 0) {
-    previous = songs.length - 1;
-  }
-
-  loadSong(previous);
-
+function scrollToSection(id) {
+    document.getElementById(id).scrollIntoView({
+        behavior: "smooth"
+    });
 }
 
-
-/* =========================================
-   AUTO NEXT SONG
-   ========================================= */
-
-audio.addEventListener("ended", function() {
-
-  nextSong();
-
+document.getElementById("modal").addEventListener("click", function(e) {
+    if (e.target === this) closeGame();
 });
 
-
-/* =========================================
-   PROGRESS BAR
-   ========================================= */
-
-audio.addEventListener("timeupdate", function() {
-
-  if (!audio.duration) return;
-
-  const percentage =
-    (audio.currentTime / audio.duration) * 100;
-
-  document.getElementById("progress").value = percentage;
-
-  document.getElementById("currentTime").textContent =
-    formatTime(audio.currentTime);
-
-  document.getElementById("duration").textContent =
-    formatTime(audio.duration);
-
-});
-
-
-function changeProgress() {
-
-  if (!audio.duration) return;
-
-  const percentage =
-    document.getElementById("progress").value;
-
-  audio.currentTime =
-    (percentage / 100) * audio.duration;
-
-}
-
-
-function formatTime(seconds) {
-
-  if (isNaN(seconds)) return "0:00";
-
-  const minutes = Math.floor(seconds / 60);
-
-  const secs = Math.floor(seconds % 60)
-    .toString()
-    .padStart(2, "0");
-
-  return `${minutes}:${secs}`;
-
-}
-
-
-/* =========================================
-   VOLUME
-   ========================================= */
-
-function changeVolume() {
-
-  audio.volume =
-    document.getElementById("volume").value;
-
-}
-
-
-/* =========================================
-   SEARCH
-   ========================================= */
-
-function searchSongs() {
-
-  const query =
-    document.getElementById("search").value
-      .toLowerCase()
-      .trim();
-
-  const filtered = songs.filter(song =>
-
-    song.title.toLowerCase().includes(query) ||
-
-    song.artist.toLowerCase().includes(query)
-
-  );
-
-  displaySongs(filtered);
-
-}
-
-
-/* =========================================
-   LIKES
-   ========================================= */
-
-function likeSong(event, index) {
-
-  event.stopPropagation();
-
-  const button =
-    document.getElementById(`like-${index}`);
-
-  const liked =
-    button.classList.toggle("liked");
-
-  button.textContent =
-    liked ? "♥" : "♡";
-
-}
-
-
-/* =========================================
-   START
-   ========================================= */
-
-displaySongs();
-
-audio.volume = 0.8;
-
+renderHome();
 </script>
 
 </body>
