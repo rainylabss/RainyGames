@@ -4,7 +4,7 @@ const games = [
         name: "RainyCrash",
         category: "Racing",
         type: "car",
-        folder: "rainy-crash",
+        file: "rainy-crash.html",
         description: "Drive and survive the traffic."
     },
 
@@ -12,7 +12,7 @@ const games = [
         name: "Rainy Racer",
         category: "Racing",
         type: "car",
-        folder: "rainy-racer",
+        file: "rainy-racer.html",
         description: "Race to the finish."
     },
 
@@ -20,7 +20,7 @@ const games = [
         name: "Rainy Snake",
         category: "Arcade",
         type: "quick",
-        folder: "rainy-snake",
+        file: "rainy-snake.html",
         description: "Eat, grow and survive."
     },
 
@@ -28,7 +28,7 @@ const games = [
         name: "Rainy Reaction",
         category: "Arcade",
         type: "quick",
-        folder: "rainy-reaction",
+        file: "rainy-reaction.html",
         description: "Test your reaction speed."
     },
 
@@ -36,7 +36,7 @@ const games = [
         name: "Rainy Jump",
         category: "Platform",
         type: "quick",
-        folder: "rainy-jump",
+        file: "rainy-jump.html",
         description: "Jump as far as you can."
     }
 
@@ -46,7 +46,7 @@ const games = [
 function makeCard(game) {
 
     return `
-        <div class="game-card" onclick="openGame('${game.folder}')">
+        <div class="game-card" onclick="openGame('${game.file}')">
 
             <div class="game-card-top"></div>
 
@@ -74,6 +74,7 @@ function render(list, elementId) {
             `<div class="empty">No games found.</div>`;
 
         return;
+
     }
 
     element.innerHTML =
@@ -101,15 +102,17 @@ function renderHome() {
 }
 
 
-function openGame(folder) {
+function openGame(file) {
 
     let recent =
-        JSON.parse(localStorage.getItem("rainyRecent") || "[]");
+        JSON.parse(
+            localStorage.getItem("rainyRecent") || "[]"
+        );
 
     recent =
-        recent.filter(game => game !== folder);
+        recent.filter(game => game !== file);
 
-    recent.unshift(folder);
+    recent.unshift(file);
 
     recent = recent.slice(0, 6);
 
@@ -118,8 +121,7 @@ function openGame(folder) {
         JSON.stringify(recent)
     );
 
-    window.location.href =
-        `games/${folder}/index.html`;
+    window.location.href = file;
 
 }
 
@@ -127,12 +129,14 @@ function openGame(folder) {
 function renderRecent() {
 
     const recent =
-        JSON.parse(localStorage.getItem("rainyRecent") || "[]");
+        JSON.parse(
+            localStorage.getItem("rainyRecent") || "[]"
+        );
 
     const recentGames =
         recent
-            .map(folder =>
-                games.find(game => game.folder === folder)
+            .map(file =>
+                games.find(game => game.file === file)
             )
             .filter(Boolean);
 
@@ -169,6 +173,7 @@ function showCategory(category) {
         render(games, "gameGrid");
 
         return;
+
     }
 
     const filtered =
@@ -179,13 +184,17 @@ function showCategory(category) {
     render(filtered, "gameGrid");
 
     window.scrollTo({
-        top: document
-            .getElementById("gameGrid")
-            .getBoundingClientRect().top
+
+        top:
+            document
+                .getElementById("gameGrid")
+                .getBoundingClientRect()
+                .top
             + window.scrollY
             - 100,
 
         behavior: "smooth"
+
     });
 
 }
@@ -193,7 +202,7 @@ function showCategory(category) {
 
 function goHome() {
 
-    window.location.href = "../../";
+    window.location.href = "index.html";
 
 }
 
