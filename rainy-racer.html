@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>Rainy Racer — RainyGames</title>
+
+<style>
+
+body {
+    margin: 0;
+    background: #08090c;
+    color: white;
+    font-family: Arial;
+    text-align: center;
+}
+
+header {
+    padding: 15px;
+    border-bottom: 1px solid #282b33;
+}
+
+button {
+    padding: 12px 18px;
+    border: 1px solid #333741;
+    background: #17191f;
+    color: white;
+    border-radius: 9px;
+}
+
+canvas {
+    display: block;
+    margin: 20px auto;
+    max-width: 95%;
+    background: #17191d;
+    border: 2px solid #333741;
+    border-radius: 12px;
+    touch-action: none;
+}
+
+.controls {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.controls button {
+    width: 110px;
+    height: 55px;
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+<header>
+
+<button onclick="location.href='index.html'">
+RainyGames
+</button>
+
+<h1>Rainy Racer</h1>
+
+<div id="score">
+Distance: 0
+</div>
+
+</header>
+
+
+<canvas
+    id="game"
+    width="400"
+    height="600"
+></canvas>
+
+
+<div class="controls">
+
+<button onclick="left()">
+LEFT
+</button>
+
+<button onclick="right()">
+RIGHT
+</button>
+
+</div>
+
+
+<script>
+
+const canvas =
+document.getElementById("game");
+
+const ctx =
+canvas.getContext("2d");
+
+
+let x = 200;
+
+let distance = 0;
+
+let speed = 5;
+
+let obstacles = [];
+
+let over = false;
+
+
+function draw() {
+
+    ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+
+    ctx.fillStyle =
+        "#25272d";
+
+    ctx.fillRect(
+        70,
+        0,
+        260,
+        600
+    );
+
+
+    ctx.strokeStyle =
+        "#888";
+
+    ctx.setLineDash([
+        30,
+        30
+    ]);
+
+    ctx.beginPath();
+
+    ctx.moveTo(200, 0);
+
+    ctx.lineTo(
+        200,
+        600
+    );
+
+    ctx.stroke();
+
+    ctx.setLineDash([]);
+
+
+    ctx.fillStyle =
+        "#ffffff";
+
+    ctx.fillRect(
+        x - 25,
+        490,
+        50,
+        80
+    );
+
+
+    ctx.fillStyle =
+        "#777";
+
+    obstacles.forEach(
+        obstacle => {
+
+            obstacle.y += speed;
+
+            ctx.fillRect(
+                obstacle.x - 25,
+                obstacle.y,
+                50,
+                70
+            );
+
+        }
+    );
+
+
+    if (
+        Math.random() < 0.025
+    ) {
+
+        obstacles.push({
+
+            x:
+                Math.random() < 0.5
+                    ? 135
+                    : 265,
+
+            y: -80
+
+        });
+
+    }
+
+
+    obstacles.forEach(
+        obstacle => {
+
+            if (
+
+                Math.abs(
+                    x - obstacle.x
+                ) < 45 &&
+
+                Math.abs(
+                    530 - obstacle.y
+                ) < 65
+
+            ) {
+
+                over = true;
+
+            }
+
+        }
+    );
+
+
+    obstacles =
+        obstacles.filter(
+            obstacle =>
+                obstacle.y < 650
+        );
+
+
+    distance++;
+
+
+    document.getElementById(
+        "score"
+    ).textContent =
+        "Distance: " + distance;
+
+
+    if (!over) {
+
+        requestAnimationFrame(
+            draw
+        );
+
+    } else {
+
+        ctx.fillStyle =
+            "rgba(0,0,0,.75)";
+
+        ctx.fillRect(
+            0,
+            0,
+            400,
+            600
+        );
+
+        ctx.fillStyle =
+            "white";
+
+        ctx.textAlign =
+            "center";
+
+        ctx.font =
+            "bold 36px Arial";
+
+        ctx.fillText(
+            "CRASH!",
+            200,
+            280
+        );
+
+        ctx.font =
+            "18px Arial";
+
+        ctx.fillText(
+            "Tap the game to restart",
+            200,
+            325
+        );
+
+    }
+
+}
+
+
+function left() {
+
+    x =
+        Math.max(
+            115,
+            x - 50
+        );
+
+}
+
+
+function right() {
+
+    x =
+        Math.min(
+            285,
+            x + 50
+        );
+
+}
+
+
+document.addEventListener(
+    "keydown",
+    event => {
+
+        if (
+            event.key ===
+            "ArrowLeft"
+        ) {
+
+            left();
+
+        }
+
+        if (
+            event.key ===
+            "ArrowRight"
+        ) {
+
+            right();
+
+        }
+
+    }
+);
+
+
+canvas.onclick = () => {
+
+    if (over) {
+
+        x = 200;
+
+        distance = 0;
+
+        obstacles = [];
+
+        over = false;
+
+        draw();
+
+    }
+
+};
+
+
+draw();
+
+</script>
+
+</body>
+</html>
