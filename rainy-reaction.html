@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>Rainy Reaction — RainyGames</title>
+
+<style>
+
+body {
+    margin: 0;
+    background: #08090c;
+    color: white;
+    font-family: Arial;
+    text-align: center;
+}
+
+header {
+    padding: 18px;
+    border-bottom: 1px solid #292c34;
+}
+
+button {
+    padding: 12px 18px;
+    border-radius: 9px;
+    border: 1px solid #333741;
+    background: #181a20;
+    color: white;
+}
+
+#box {
+    width: 90vw;
+    max-width: 600px;
+    height: 400px;
+    margin: 30px auto;
+    border-radius: 18px;
+    background: #17191f;
+    border: 2px solid #333741;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    user-select: none;
+}
+
+#message {
+    font-size: 25px;
+    font-weight: bold;
+}
+
+#time {
+    color: #8e939e;
+    margin-top: 10px;
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+<header>
+
+<button onclick="location.href='index.html'">
+RainyGames
+</button>
+
+<h1>Rainy Reaction</h1>
+
+<div id="time">
+Best: --
+</div>
+
+</header>
+
+
+<div id="box">
+
+<div id="message">
+Tap to start
+</div>
+
+</div>
+
+
+<script>
+
+const box =
+document.getElementById("box");
+
+const message =
+document.getElementById("message");
+
+const time =
+document.getElementById("time");
+
+
+let ready = false;
+
+let startTime = 0;
+
+let timer;
+
+
+let best =
+localStorage.getItem(
+    "rainyReactionBest"
+);
+
+
+if (best) {
+
+    time.textContent =
+        "Best: " + best + " ms";
+
+}
+
+
+box.onclick = () => {
+
+
+    if (!ready) {
+
+        message.textContent =
+            "Wait...";
+
+        box.style.background =
+            "#30333b";
+
+        ready = false;
+
+
+        clearTimeout(timer);
+
+
+        timer =
+            setTimeout(
+                () => {
+
+                    ready = true;
+
+                    startTime =
+                        performance.now();
+
+                    message.textContent =
+                        "CLICK!";
+
+                    box.style.background =
+                        "#ffffff";
+
+                    box.style.color =
+                        "#08090c";
+
+                },
+                1000 +
+                Math.random() * 3000
+            );
+
+
+        return;
+
+    }
+
+
+    const result =
+        Math.round(
+            performance.now() -
+            startTime
+        );
+
+
+    message.textContent =
+        result + " ms";
+
+
+    box.style.background =
+        "#17191f";
+
+    box.style.color =
+        "white";
+
+
+    if (
+
+        !best ||
+
+        result <
+            Number(best)
+
+    ) {
+
+        best = result;
+
+
+        localStorage.setItem(
+            "rainyReactionBest",
+            best
+        );
+
+
+        time.textContent =
+            "Best: " + best + " ms";
+
+    }
+
+
+    ready = false;
+
+};
+
+</script>
+
+</body>
+</html>
