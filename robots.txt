@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://rainylabss.github.io/RainyGames/sitemap.xml
