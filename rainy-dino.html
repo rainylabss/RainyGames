@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>RainyDino — RainyGames</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: #08090c;
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.topbar {
+    width: 100%;
+    padding: 18px 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #22252c;
+    background: #08090c;
+}
+
+.logo {
+    font-size: 21px;
+    font-weight: 800;
+}
+
+.back {
+    color: #b8bbc4;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.back:hover {
+    color: white;
+}
+
+.game-wrap {
+    width: min(1100px, 92%);
+    margin-top: 35px;
+}
+
+.title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    margin-bottom: 15px;
+}
+
+.title-row h1 {
+    font-size: 34px;
+}
+
+.stats {
+    display: flex;
+    gap: 25px;
+    color: #aaaeb8;
+    font-size: 14px;
+}
+
+.stats strong {
+    color: white;
+}
+
+canvas {
+    width: 100%;
+    height: auto;
+    display: block;
+    background: #f7f7f7;
+    border-radius: 14px;
+    border: 1px solid #30333b;
+    image-rendering: pixelated;
+    touch-action: manipulation;
+}
+
+.controls {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 15px;
+}
+
+.controls button {
+    padding: 13px 24px;
+    border: 1px solid #30333b;
+    border-radius: 10px;
+    background: #15171d;
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.controls button:hover {
+    background: #22252d;
+}
+
+.help {
+    text-align: center;
+    color: #777c87;
+    font-size: 13px;
+    margin-top: 14px;
+}
+
+@media (max-width: 600px) {
+
+    .title-row {
+        align-items: center;
+    }
+
+    .title-row h1 {
+        font-size: 26px;
+    }
+
+    .stats {
+        gap: 10px;
+        font-size: 12px;
+    }
+
+    .controls button {
+        flex: 1;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header class="topbar">
+    <div class="logo">RainyGames</div>
+    <a class="back" href="index.html">Back to RainyGames</a>
+</header>
+
+<main class="game-wrap">
+
+    <div class="title-row">
+        <h1>RainyDino</h1>
+
+        <div class="stats">
+            <span>Score: <strong id="score">00000</strong></span>
+            <span>Best: <strong id="best">00000</strong></span>
+        </div>
+    </div>
+
+    <canvas id="game" width="1000" height="330"></canvas>
+
+    <div class="controls">
+        <button id="jumpButton">JUMP</button>
+        <button id="restartButton">RESTART</button>
+    </div>
+
+    <p class="help">
+        Press SPACE or UP to jump. On mobile, tap JUMP.
+    </p>
+
+</main>
+
+<script>
+
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+
+const scoreText = document.getElementById("score");
+const bestText = document.getElementById("best");
+
+const jumpButton = document.getElementById("jumpButton");
+const restartButton = document.getElementById("restartButton");
+
+
+let dino;
+let obstacles;
+let clouds;
+let particles;
+
+let score;
+let best = Number(localStorage.getItem("rainyDinoBest") || 0);
+
+let speed;
+let gameOver;
+let started;
+
+let spawnTimer;
+let cloudTimer;
+
+let lastTime = 0;
+
+
+bestText.textContent = String(best).padStart(5, "0");
+
+
+function resetGame() {
+
+    dino = {
+        x: 90,
+        y: 230,
+        width: 45,
+        height: 50,
+        velocityY: 0,
+        grounded: true
+    };
+
+    obstacles = [];
+    clouds = [];
+    particles = [];
+
+    score = 0;
+
+    // Starting speed
+    speed = 6;
+
+    gameOver = false;
+    started = false;
+
+    spawnTimer = 0;
+    cloudTimer = 0;
+
+    updateScore();
+
+}
+
+
+function updateScore() {
+
+    scoreText.textContent =
+        Math.floor(score).toString().padStart(5, "0");
+
+    bestText.textContent =
+        Math.floor(best).toString().padStart(5, "0");
+
+}
+
+
+function jump() {
+
+    if (gameOver) {
+        resetGame();
+        started = true;
+        dino.velocityY = -13;
+        return;
+    }
+
+    started = true;
+
+    if (dino.grounded) {
+
+        dino.velocityY = -13;
+
+        dino.grounded = false;
+
+    }
+
+}
+
+
+function createObstacle() {
+
+    const type = Math.random();
+
+    let obstacle;
+
+    if (type < 0.7) {
+
+        obstacle = {
+            type: "cactus",
+            x: canvas.width + 20,
+            y: 240,
+            width: 25 + Math.random() * 15,
+            height: 50 + Math.random() * 25
+        };
+
+    } else {
+
+        obstacle = {
+            type: "cactusGroup",
+            x: canvas.width + 20,
+            y: 225,
+            width: 55,
+            height: 65
+        };
+
+    }
+
+    obstacles.push(obstacle);
+
+}
+
+
+function createCloud() {
+
+    clouds.push({
+        x: canvas.width + 30,
+        y: 45 + Math.random() * 80,
+        width: 45 + Math.random() * 55,
+        speed: 0.6 + Math.random() * 0.5
+    });
+
+}
+
+
+function createParticle(x, y) {
+
+    particles.push({
+        x: x,
+        y: y,
+        life: 1,
+        velocityX: -speed * 0.3,
+        velocityY: -Math.random() * 2
+    });
+
+}
+
+
+function drawDino() {
+
+    const x = dino.x;
+    const y = dino.y;
+
+    ctx.fillStyle = "#222";
+
+    // Body
+    ctx.fillRect(
+        x + 8,
+        y + 15,
+        30,
+        28
+    );
+
+    // Head
+    ctx.fillRect(
+        x + 25,
+        y,
+        24,
+        25
+    );
+
+    // Snout
+    ctx.fillRect(
+        x + 43,
+        y + 9,
+        14,
+        13
+    );
+
+    // Tail
+    ctx.fillRect(
+        x,
+        y + 28,
+        13,
+        8
+    );
+
+    ctx.fillRect(
+        x - 7,
+        y + 23,
+        12,
+        7
+    );
+
+    // Legs
+    ctx.fillRect(
+        x + 12,
+        y + 40,
+        8,
+        13
+    );
+
+    ctx.fillRect(
+        x + 30,
+        y + 40,
+        8,
+        13
+    );
+
+    // Eye
+    ctx.fillStyle = "#f7f7f7";
+
+    ctx.fillRect(
+        x + 40,
+        y + 5,
+        4,
+        4
+    );
+
+}
+
+
+function drawCactus(obstacle) {
+
+    ctx.fillStyle = "#222";
+
+    const x = obstacle.x;
+    const y = obstacle.y;
+
+    if (obstacle.type === "cactus") {
+
+        ctx.fillRect(
+            x,
+            y,
+            obstacle.width,
+            obstacle.height
+        );
+
+        ctx.fillRect(
+            x - 10,
+            y + 20,
+            10,
+            9
+        );
+
+        ctx.fillRect(
+            x - 10,
+            y + 14,
+            7,
+            15
+        );
+
+        ctx.fillRect(
+            x + obstacle.width,
+            y + 30,
+            10,
+            9
+        );
+
+        ctx.fillRect(
+            x + obstacle.width + 3,
+            y + 23,
+            7,
+            16
+        );
+
+    } else {
+
+        // First cactus
+        ctx.fillRect(x, y + 10, 18, 55);
+        ctx.fillRect(x - 8, y + 25, 8, 9);
+        ctx.fillRect(x - 8, y + 19, 6, 15);
+
+        // Second cactus
+        ctx.fillRect(x + 25, y, 18, 65);
+        ctx.fillRect(x + 43, y + 22, 10, 9);
+        ctx.fillRect(x + 47, y + 15, 6, 16);
+
+    }
+
+}
+
+
+function drawCloud(cloud) {
+
+    ctx.fillStyle = "#d4d4d4";
+
+    ctx.fillRect(
+        cloud.x,
+        cloud.y + 10,
+        cloud.width,
+        8
+    );
+
+    ctx.fillRect(
+        cloud.x + 10,
+        cloud.y,
+        20,
+        12
+    );
+
+    ctx.fillRect(
+        cloud.x + 25,
+        cloud.y - 5,
+        25,
+        17
+    );
+
+}
+
+
+function drawGround() {
+
+    ctx.fillStyle = "#222";
+
+    ctx.fillRect(
+        0,
+        293,
+        canvas.width,
+        3
+    );
+
+    // Little ground marks
+    ctx.fillStyle = "#777";
+
+    const offset =
+        (score * 5) % 80;
+
+    for (
+        let x = -80 + offset;
+        x < canvas.width;
+        x += 80
+    ) {
+
+        ctx.fillRect(
+            x,
+            302,
+            25,
+            2
+        );
+
+    }
+
+}
+
+
+function drawParticles() {
+
+    ctx.fillStyle = "#777";
+
+    particles.forEach(p => {
+
+        ctx.fillRect(
+            p.x,
+            p.y,
+            3,
+            3
+        );
+
+    });
+
+}
+
+
+function drawStartScreen() {
+
+    if (started || gameOver) return;
+
+    ctx.fillStyle = "rgba(247,247,247,0.88)";
+    ctx.fillRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    ctx.fillStyle = "#222";
+
+    ctx.textAlign = "center";
+
+    ctx.font = "bold 30px Arial";
+
+    ctx.fillText(
+        "RAINYDINO",
+        canvas.width / 2,
+        125
+    );
+
+    ctx.font = "16px Arial";
+
+    ctx.fillText(
+        "Press SPACE or tap JUMP to start",
+        canvas.width / 2,
+        160
+    );
+
+    ctx.textAlign = "left";
+
+}
+
+
+function drawGameOver() {
+
+    if (!gameOver) return;
+
+    ctx.fillStyle = "rgba(247,247,247,0.88)";
+
+    ctx.fillRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    ctx.fillStyle = "#222";
+
+    ctx.textAlign = "center";
+
+    ctx.font = "bold 34px Arial";
+
+    ctx.fillText(
+        "GAME OVER",
+        canvas.width / 2,
+        125
+    );
+
+    ctx.font = "16px Arial";
+
+    ctx.fillText(
+        "Tap RESTART or jump to play again",
+        canvas.width / 2,
+        160
+    );
+
+    ctx.textAlign = "left";
+
+}
+
+
+function collision(a, b) {
+
+    const padding = 7;
+
+    return (
+
+        a.x + padding <
+        b.x + b.width &&
+
+        a.x + a.width - padding >
+        b.x &&
+
+        a.y + padding <
+        b.y + b.height &&
+
+        a.y + a.height - padding >
+        b.y
+
+    );
+
+}
+
+
+function update(delta) {
+
+    if (!started || gameOver) return;
+
+    // Score increases over time
+    score += delta * 0.01;
+
+    // SPEED INCREASES THE FURTHER YOU GET
+    // Starts at 6 and gradually gets faster.
+    speed =
+        6 +
+        Math.min(
+            score / 180,
+            8
+        );
+
+    // Dino physics
+    dino.velocityY += 0.65;
+
+    dino.y += dino.velocityY;
+
+    if (dino.y >= 230) {
+
+        dino.y = 230;
+
+        dino.velocityY = 0;
+
+        dino.grounded = true;
+
+    }
+
+    // Spawn obstacles
+    spawnTimer += delta;
+
+    const spawnDelay =
+        Math.max(
+            700,
+            1450 - speed * 45
+        );
+
+    if (spawnTimer > spawnDelay) {
+
+        createObstacle();
+
+        spawnTimer = 0;
+
+    }
+
+    // Move obstacles
+    obstacles.forEach(obstacle => {
+
+        obstacle.x -=
+            speed * delta / 16.67;
+
+    });
+
+    obstacles =
+        obstacles.filter(
+            obstacle =>
+                obstacle.x + obstacle.width > -50
+        );
+
+    // Collision detection
+    for (const obstacle of obstacles) {
+
+        if (collision(dino, obstacle)) {
+
+            endGame();
+
+            return;
+
+        }
+
+    }
+
+    // Clouds
+    cloudTimer += delta;
+
+    if (cloudTimer > 1800) {
+
+        createCloud();
+
+        cloudTimer = 0;
+
+    }
+
+    clouds.forEach(cloud => {
+
+        cloud.x -=
+            cloud.speed * delta / 16.67;
+
+    });
+
+    clouds =
+        clouds.filter(
+            cloud =>
+                cloud.x + cloud.width > -50
+        );
+
+    // Dust particles
+    if (dino.grounded && Math.random() < 0.15) {
+
+        createParticle(
+            dino.x + 5,
+            dino.y + 50
+        );
+
+    }
+
+    particles.forEach(p => {
+
+        p.x += p.velocityX * delta / 16.67;
+        p.y += p.velocityY * delta / 16.67;
+
+        p.life -=
+            delta / 400;
+
+    });
+
+    particles =
+        particles.filter(
+            p => p.life > 0
+        );
+
+    updateScore();
+
+}
+
+
+function endGame() {
+
+    gameOver = true;
+
+    const finalScore =
+        Math.floor(score);
+
+    if (finalScore > best) {
+
+        best = finalScore;
+
+        localStorage.setItem(
+            "rainyDinoBest",
+            best
+        );
+
+    }
+
+    updateScore();
+
+}
+
+
+function draw() {
+
+    // Sky
+    ctx.fillStyle = "#f7f7f7";
+
+    ctx.fillRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    // Clouds
+    clouds.forEach(drawCloud);
+
+    // Ground
+    drawGround();
+
+    // Obstacles
+    obstacles.forEach(drawCactus);
+
+    // Dino
+    drawDino();
+
+    // Dust
+    drawParticles();
+
+    drawStartScreen();
+
+    drawGameOver();
+
+}
+
+
+function gameLoop(time) {
+
+    const delta =
+        Math.min(
+            time - lastTime,
+            40
+        );
+
+    lastTime = time;
+
+    update(delta);
+
+    draw();
+
+    requestAnimationFrame(gameLoop);
+
+}
+
+
+jumpButton.addEventListener(
+    "click",
+    jump
+);
+
+restartButton.addEventListener(
+    "click",
+    resetGame
+);
+
+
+canvas.addEventListener(
+    "click",
+    jump
+);
+
+
+document.addEventListener(
+    "keydown",
+    event => {
+
+        if (
+            event.code === "Space" ||
+            event.code === "ArrowUp"
+        ) {
+
+            event.preventDefault();
+
+            jump();
+
+        }
+
+    }
+);
+
+
+resetGame();
+
+requestAnimationFrame(gameLoop);
+
+</script>
+
+</body>
+</html>
