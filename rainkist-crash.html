@@ -1,0 +1,1685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Rainkist Crash — RainyGames</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: #08090c;
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+    overflow-x: hidden;
+}
+
+.topbar {
+    height: 70px;
+    padding: 0 5%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #08090c;
+    border-bottom: 1px solid #22252c;
+}
+
+.logo {
+    font-size: 21px;
+    font-weight: 800;
+}
+
+.back {
+    color: #aeb2bc;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.game-wrap {
+    width: min(1200px, 94%);
+    margin: 25px auto;
+}
+
+.title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+}
+
+.title-row h1 {
+    font-size: 31px;
+}
+
+.stats {
+    display: flex;
+    gap: 20px;
+    color: #a4a8b2;
+    font-size: 13px;
+}
+
+.stats strong {
+    color: white;
+}
+
+.game-box {
+    border: 1px solid #292c34;
+    border-radius: 14px;
+    overflow: hidden;
+    background: #11131a;
+}
+
+canvas {
+    display: block;
+    width: 100%;
+    height: auto;
+    touch-action: none;
+}
+
+.controls {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 15px;
+}
+
+.controls button {
+    width: 130px;
+    height: 52px;
+    border-radius: 11px;
+    border: 1px solid #343844;
+    background: #171a21;
+    color: white;
+    font-weight: 800;
+    touch-action: manipulation;
+}
+
+.controls button:active {
+    transform: scale(.96);
+    background: #252933;
+}
+
+.help {
+    text-align: center;
+    color: #747985;
+    margin-top: 12px;
+    font-size: 13px;
+}
+
+@media (max-width: 600px) {
+
+    .title-row h1 {
+        font-size: 24px;
+    }
+
+    .stats {
+        gap: 8px;
+        font-size: 11px;
+    }
+
+    .controls button {
+        width: 110px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header class="topbar">
+    <div class="logo">RainyGames</div>
+    <a class="back" href="index.html">Back to RainyGames</a>
+</header>
+
+<main class="game-wrap">
+
+    <div class="title-row">
+
+        <h1>Rainkist Crash</h1>
+
+        <div class="stats">
+            <span>Distance: <strong id="distance">0</strong>m</span>
+            <span>Speed: <strong id="speed">0</strong></span>
+            <span>Best: <strong id="best">0</strong>m</span>
+        </div>
+
+    </div>
+
+    <div class="game-box">
+        <canvas id="game" width="1200" height="600"></canvas>
+    </div>
+
+    <div class="controls">
+
+        <button id="left">
+            LEFT
+        </button>
+
+        <button id="brake">
+            BRAKE
+        </button>
+
+        <button id="right">
+            RIGHT
+        </button>
+
+    </div>
+
+    <p class="help">
+        A / D or LEFT / RIGHT to steer · S or DOWN to brake · R to restart
+    </p>
+
+</main>
+
+<script>
+
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+
+const distanceText =
+    document.getElementById("distance");
+
+const speedText =
+    document.getElementById("speed");
+
+const bestText =
+    document.getElementById("best");
+
+
+let car;
+let ramps;
+let scenery;
+let particles;
+
+let distance = 0;
+
+let best =
+    Number(
+        localStorage.getItem(
+            "rainkistBest"
+        ) || 0
+    );
+
+let gameOver = false;
+let started = false;
+
+let leftPressed = false;
+let rightPressed = false;
+let brakePressed = false;
+
+let cameraX = 0;
+let cameraY = 0;
+
+let lastTime = 0;
+
+bestText.textContent = best;
+
+
+function resetGame() {
+
+    car = {
+
+        x: 220,
+        y: 330,
+
+        width: 54,
+        height: 27,
+
+        velocityX: 0,
+        velocityY: 0,
+
+        angle: 0,
+        angularVelocity: 0,
+
+        grounded: true,
+
+        speed: 0
+
+    };
+
+
+    ramps = [];
+    scenery = [];
+    particles = [];
+
+    distance = 0;
+
+    gameOver = false;
+    started = false;
+
+    cameraX = 0;
+    cameraY = 0;
+
+    createWorld();
+
+    updateUI();
+
+}
+
+
+function createWorld() {
+
+    let x = -100;
+
+    let y = 430;
+
+    while (x < 10000) {
+
+        const length =
+            300 +
+            Math.random() * 450;
+
+        const heightChange =
+            -130 +
+            Math.random() * 260;
+
+        const nextY =
+            Math.max(
+                300,
+                Math.min(
+                    500,
+                    y + heightChange
+                )
+            );
+
+        ramps.push({
+
+            x: x,
+
+            y: y,
+
+            width: length,
+
+            nextY: nextY
+
+        });
+
+        // Trees / rocks
+
+        if (Math.random() < 0.7) {
+
+            scenery.push({
+
+                type: Math.random() < 0.5
+                    ? "tree"
+                    : "rock",
+
+                x:
+                    x +
+                    100 +
+                    Math.random() *
+                    (length - 100),
+
+                y:
+                    Math.min(y, nextY) -
+                    30 -
+                    Math.random() * 80
+
+            });
+
+        }
+
+        x += length;
+
+        y = nextY;
+
+    }
+
+}
+
+
+function getGroundY(worldX) {
+
+    for (const ramp of ramps) {
+
+        if (
+            worldX >= ramp.x &&
+            worldX <= ramp.x + ramp.width
+        ) {
+
+            const progress =
+                (worldX - ramp.x) /
+                ramp.width;
+
+            return (
+                ramp.y +
+                (ramp.nextY - ramp.y) *
+                progress
+            );
+
+        }
+
+    }
+
+    return 500;
+
+}
+
+
+function getGroundSlope(worldX) {
+
+    for (const ramp of ramps) {
+
+        if (
+            worldX >= ramp.x &&
+            worldX <= ramp.x + ramp.width
+        ) {
+
+            return (
+                (ramp.nextY - ramp.y) /
+                ramp.width
+            );
+
+        }
+
+    }
+
+    return 0;
+
+}
+
+
+function startGame() {
+
+    if (gameOver) {
+
+        resetGame();
+
+    }
+
+    started = true;
+
+}
+
+
+function update(delta) {
+
+    if (!started || gameOver) {
+        return;
+    }
+
+    const dt =
+        Math.min(
+            delta / 16.67,
+            2
+        );
+
+
+    // Gravity
+
+    car.velocityY +=
+        0.55 * dt;
+
+
+    // Steering
+
+    if (leftPressed) {
+
+        car.velocityX -=
+            0.12 * dt;
+
+        car.angularVelocity -=
+            0.008 * dt;
+
+    }
+
+    if (rightPressed) {
+
+        car.velocityX +=
+            0.12 * dt;
+
+        car.angularVelocity +=
+            0.008 * dt;
+
+    }
+
+
+    // Brake
+
+    if (brakePressed) {
+
+        car.velocityX *=
+            Math.pow(
+                0.88,
+                dt
+            );
+
+    }
+
+
+    // Downhill acceleration
+
+    const slope =
+        getGroundSlope(
+            car.x
+        );
+
+    car.velocityX +=
+        slope * 0.75 * dt;
+
+
+    // Natural acceleration
+
+    if (car.grounded) {
+
+        car.velocityX +=
+            0.025 * dt;
+
+    }
+
+
+    // Speed limit
+
+    car.velocityX =
+        Math.max(
+            -3,
+            Math.min(
+                car.velocityX,
+                15
+            )
+        );
+
+
+    car.x +=
+        car.velocityX * dt;
+
+
+    car.y +=
+        car.velocityY * dt;
+
+
+    // Air rotation
+
+    if (!car.grounded) {
+
+        car.angle +=
+            car.angularVelocity * dt;
+
+    }
+
+
+    // Ground detection
+
+    const ground =
+        getGroundY(
+            car.x + car.width / 2
+        );
+
+
+    if (
+        car.y +
+        car.height / 2
+        >=
+        ground
+    ) {
+
+        car.y =
+            ground -
+            car.height / 2;
+
+        if (
+            car.velocityY > 6
+        ) {
+
+            createCrashParticles(
+                car.x,
+                car.y + 10
+            );
+
+        }
+
+        car.velocityY *=
+            -0.15;
+
+        car.grounded = true;
+
+
+        // Align with slope
+
+        const targetAngle =
+            Math.atan(
+                getGroundSlope(
+                    car.x
+                )
+            );
+
+        car.angle +=
+            (
+                targetAngle -
+                car.angle
+            ) * 0.15 * dt;
+
+
+        car.angularVelocity *=
+            0.8;
+
+
+    } else {
+
+        car.grounded = false;
+
+    }
+
+
+    // Distance
+
+    distance +=
+        Math.max(
+            car.velocityX,
+            0
+        ) *
+        dt *
+        0.12;
+
+
+    // Camera
+
+    cameraX +=
+        (
+            car.x -
+            cameraX -
+            350
+        ) * 0.08 * dt;
+
+
+    cameraY +=
+        (
+            car.y -
+            cameraY -
+            300
+        ) * 0.04 * dt;
+
+
+    // Particles
+
+    if (
+        car.grounded &&
+        Math.random() < 0.3
+    ) {
+
+        createParticle(
+            car.x - 20,
+            car.y + 13
+        );
+
+    }
+
+
+    particles.forEach(
+        particle => {
+
+            particle.x +=
+                particle.velocityX * dt;
+
+            particle.y +=
+                particle.velocityY * dt;
+
+            particle.velocityY +=
+                0.1 * dt;
+
+            particle.life -=
+                0.035 * dt;
+
+        }
+    );
+
+
+    particles =
+        particles.filter(
+            p => p.life > 0
+        );
+
+
+    // Fall off world
+
+    if (
+        car.y > 800
+    ) {
+
+        crash();
+
+    }
+
+
+    // Hard crash when rotating too violently
+
+    if (
+        Math.abs(
+            car.angle
+        ) >
+        Math.PI * 1.7
+    ) {
+
+        crash();
+
+    }
+
+
+    updateUI();
+
+}
+
+
+function createParticle(x, y) {
+
+    particles.push({
+
+        x: x,
+
+        y: y,
+
+        velocityX:
+            -Math.random() * 3,
+
+        velocityY:
+            -Math.random() * 2,
+
+        life: 1
+
+    });
+
+}
+
+
+function createCrashParticles(x, y) {
+
+    for (
+        let i = 0;
+        i < 12;
+        i++
+    ) {
+
+        particles.push({
+
+            x: x,
+
+            y: y,
+
+            velocityX:
+                -4 +
+                Math.random() * 8,
+
+            velocityY:
+                -5 +
+                Math.random() * 5,
+
+            life: 1
+
+        });
+
+    }
+
+}
+
+
+function crash() {
+
+    if (gameOver) {
+        return;
+    }
+
+    gameOver = true;
+
+    createCrashParticles(
+        car.x,
+        car.y
+    );
+
+    const finalDistance =
+        Math.floor(
+            distance
+        );
+
+    if (
+        finalDistance > best
+    ) {
+
+        best =
+            finalDistance;
+
+        localStorage.setItem(
+            "rainkistBest",
+            best
+        );
+
+    }
+
+    updateUI();
+
+}
+
+
+function updateUI() {
+
+    distanceText.textContent =
+        Math.floor(
+            distance
+        );
+
+    speedText.textContent =
+        Math.floor(
+            Math.abs(
+                car?.velocityX || 0
+            ) * 12
+        );
+
+    bestText.textContent =
+        best;
+
+}
+
+
+function drawSky() {
+
+    const gradient =
+        ctx.createLinearGradient(
+            0,
+            0,
+            0,
+            canvas.height
+        );
+
+    gradient.addColorStop(
+        0,
+        "#8c98a8"
+    );
+
+    gradient.addColorStop(
+        0.6,
+        "#c8ced5"
+    );
+
+    gradient.addColorStop(
+        1,
+        "#e1e3e5"
+    );
+
+    ctx.fillStyle =
+        gradient;
+
+    ctx.fillRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+
+    // Distant hills
+
+    ctx.fillStyle =
+        "#87909b";
+
+    ctx.beginPath();
+
+    ctx.moveTo(0, 360);
+
+    for (
+        let x = 0;
+        x <= canvas.width;
+        x += 80
+    ) {
+
+        const worldX =
+            x +
+            cameraX * 0.35;
+
+        const y =
+            340 +
+            Math.sin(
+                worldX * 0.002
+            ) * 45;
+
+        ctx.lineTo(
+            x,
+            y
+        );
+
+    }
+
+    ctx.lineTo(
+        canvas.width,
+        canvas.height
+    );
+
+    ctx.lineTo(
+        0,
+        canvas.height
+    );
+
+    ctx.closePath();
+
+    ctx.fill();
+
+}
+
+
+function drawGround() {
+
+    ramps.forEach(
+        ramp => {
+
+            if (
+                ramp.x +
+                ramp.width <
+                cameraX - 100
+            ) {
+                return;
+            }
+
+            if (
+                ramp.x >
+                cameraX +
+                canvas.width +
+                100
+            ) {
+                return;
+            }
+
+            const x1 =
+                ramp.x -
+                cameraX;
+
+            const x2 =
+                ramp.x +
+                ramp.width -
+                cameraX;
+
+            const y1 =
+                ramp.y -
+                cameraY;
+
+            const y2 =
+                ramp.nextY -
+                cameraY;
+
+
+            ctx.fillStyle =
+                "#30363d";
+
+            ctx.beginPath();
+
+            ctx.moveTo(
+                x1,
+                y1
+            );
+
+            ctx.lineTo(
+                x2,
+                y2
+            );
+
+            ctx.lineTo(
+                x2,
+                canvas.height
+            );
+
+            ctx.lineTo(
+                x1,
+                canvas.height
+            );
+
+            ctx.closePath();
+
+            ctx.fill();
+
+
+            // Track surface
+
+            ctx.strokeStyle =
+                "#15181d";
+
+            ctx.lineWidth = 8;
+
+            ctx.beginPath();
+
+            ctx.moveTo(
+                x1,
+                y1
+            );
+
+            ctx.lineTo(
+                x2,
+                y2
+            );
+
+            ctx.stroke();
+
+
+            // Track markings
+
+            ctx.strokeStyle =
+                "#555b64";
+
+            ctx.lineWidth = 3;
+
+            for (
+                let mark = 0;
+                mark < ramp.width;
+                mark += 100
+            ) {
+
+                const progress =
+                    mark /
+                    ramp.width;
+
+                const mx =
+                    x1 +
+                    (
+                        x2 -
+                        x1
+                    ) *
+                    progress;
+
+                const my =
+                    y1 +
+                    (
+                        y2 -
+                        y1
+                    ) *
+                    progress;
+
+                ctx.beginPath();
+
+                ctx.moveTo(
+                    mx,
+                    my + 15
+                );
+
+                ctx.lineTo(
+                    mx + 25,
+                    my + 12
+                );
+
+                ctx.stroke();
+
+            }
+
+        }
+    );
+
+}
+
+
+function drawScenery() {
+
+    scenery.forEach(
+        item => {
+
+            const x =
+                item.x -
+                cameraX;
+
+            const y =
+                item.y -
+                cameraY;
+
+            if (
+                x < -100 ||
+                x > canvas.width + 100
+            ) {
+                return;
+            }
+
+
+            if (
+                item.type === "tree"
+            ) {
+
+                // Trunk
+
+                ctx.fillStyle =
+                    "#3b3029";
+
+                ctx.fillRect(
+                    x - 6,
+                    y + 35,
+                    12,
+                    45
+                );
+
+
+                // Leaves
+
+                ctx.fillStyle =
+                    "#28362e";
+
+                ctx.beginPath();
+
+                ctx.arc(
+                    x,
+                    y + 25,
+                    30,
+                    0,
+                    Math.PI * 2
+                );
+
+                ctx.fill();
+
+                ctx.beginPath();
+
+                ctx.arc(
+                    x - 20,
+                    y + 38,
+                    20,
+                    0,
+                    Math.PI * 2
+                );
+
+                ctx.fill();
+
+                ctx.beginPath();
+
+                ctx.arc(
+                    x + 20,
+                    y + 38,
+                    20,
+                    0,
+                    Math.PI * 2
+                );
+
+                ctx.fill();
+
+            }
+
+
+            if (
+                item.type === "rock"
+            ) {
+
+                ctx.fillStyle =
+                    "#555b63";
+
+                ctx.beginPath();
+
+                ctx.moveTo(
+                    x - 28,
+                    y + 35
+                );
+
+                ctx.lineTo(
+                    x - 10,
+                    y
+                );
+
+                ctx.lineTo(
+                    x + 22,
+                    y + 8
+                );
+
+                ctx.lineTo(
+                    x + 30,
+                    y + 35
+                );
+
+                ctx.closePath();
+
+                ctx.fill();
+
+            }
+
+        }
+    );
+
+}
+
+
+function drawCar() {
+
+    const screenX =
+        car.x -
+        cameraX;
+
+    const screenY =
+        car.y -
+        cameraY;
+
+
+    ctx.save();
+
+    ctx.translate(
+        screenX +
+        car.width / 2,
+        screenY +
+        car.height / 2
+    );
+
+    ctx.rotate(
+        car.angle
+    );
+
+
+    // Wheels
+
+    ctx.fillStyle =
+        "#101217";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        -17,
+        15,
+        11,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+    ctx.beginPath();
+
+    ctx.arc(
+        18,
+        15,
+        11,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+
+    // Body
+
+    ctx.fillStyle =
+        "#e8e8e8";
+
+    ctx.fillRect(
+        -27,
+        -5,
+        54,
+        23
+    );
+
+
+    // Roof
+
+    ctx.fillStyle =
+        "#c0c3c8";
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        -16,
+        -5
+    );
+
+    ctx.lineTo(
+        -7,
+        -23
+    );
+
+    ctx.lineTo(
+        14,
+        -23
+    );
+
+    ctx.lineTo(
+        23,
+        -5
+    );
+
+    ctx.closePath();
+
+    ctx.fill();
+
+
+    // Windows
+
+    ctx.fillStyle =
+        "#20252d";
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        -7,
+        -18
+    );
+
+    ctx.lineTo(
+        5,
+        -18
+    );
+
+    ctx.lineTo(
+        10,
+        -7
+    );
+
+    ctx.lineTo(
+        -12,
+        -7
+    );
+
+    ctx.closePath();
+
+    ctx.fill();
+
+
+    // Bumper
+
+    ctx.fillStyle =
+        "#777d86";
+
+    ctx.fillRect(
+        22,
+        5,
+        9,
+        7
+    );
+
+
+    ctx.restore();
+
+}
+
+
+function drawParticles() {
+
+    particles.forEach(
+        particle => {
+
+            ctx.globalAlpha =
+                particle.life;
+
+            ctx.fillStyle =
+                "#c4c8ce";
+
+            ctx.fillRect(
+                particle.x -
+                cameraX,
+
+                particle.y -
+                cameraY,
+
+                5,
+                5
+            );
+
+        }
+    );
+
+    ctx.globalAlpha = 1;
+
+}
+
+
+function drawStartScreen() {
+
+    if (
+        started ||
+        gameOver
+    ) {
+        return;
+    }
+
+    ctx.fillStyle =
+        "rgba(8,9,12,0.72)";
+
+    ctx.fillRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    ctx.textAlign =
+        "center";
+
+    ctx.fillStyle =
+        "white";
+
+    ctx.font =
+        "800 42px Arial";
+
+    ctx.fillText(
+        "RAINKIST CRASH",
+        canvas.width / 2,
+        245
+    );
+
+    ctx.font =
+        "16px Arial";
+
+    ctx.fillStyle =
+        "#c4c8ce";
+
+    ctx.fillText(
+        "Tap the game to start",
+        canvas.width / 2,
+        280
+    );
+
+    ctx.textAlign =
+        "left";
+
+}
+
+
+function drawGameOver() {
+
+    if (!gameOver) {
+        return;
+    }
+
+    ctx.fillStyle =
+        "rgba(8,9,12,0.72)";
+
+    ctx.fillRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    ctx.textAlign =
+        "center";
+
+    ctx.fillStyle =
+        "white";
+
+    ctx.font =
+        "800 42px Arial";
+
+    ctx.fillText(
+        "CRASHED!",
+        canvas.width / 2,
+        235
+    );
+
+    ctx.font =
+        "16px Arial";
+
+    ctx.fillStyle =
+        "#c4c8ce";
+
+    ctx.fillText(
+        "Tap the game or press R to restart",
+        canvas.width / 2,
+        275
+    );
+
+    ctx.textAlign =
+        "left";
+
+}
+
+
+function draw() {
+
+    drawSky();
+
+    drawScenery();
+
+    drawGround();
+
+    drawParticles();
+
+    drawCar();
+
+    drawStartScreen();
+
+    drawGameOver();
+
+}
+
+
+function loop(time) {
+
+    const delta =
+        Math.min(
+            time - lastTime,
+            35
+        );
+
+    lastTime = time;
+
+    update(delta);
+
+    draw();
+
+    requestAnimationFrame(
+        loop
+    );
+
+}
+
+
+/* CONTROLS */
+
+function pressLeft(e) {
+
+    e.preventDefault();
+
+    leftPressed = true;
+
+    startGame();
+
+}
+
+function releaseLeft(e) {
+
+    e.preventDefault();
+
+    leftPressed = false;
+
+}
+
+
+function pressRight(e) {
+
+    e.preventDefault();
+
+    rightPressed = true;
+
+    startGame();
+
+}
+
+function releaseRight(e) {
+
+    e.preventDefault();
+
+    rightPressed = false;
+
+}
+
+
+function pressBrake(e) {
+
+    e.preventDefault();
+
+    brakePressed = true;
+
+    startGame();
+
+}
+
+function releaseBrake(e) {
+
+    e.preventDefault();
+
+    brakePressed = false;
+
+}
+
+
+/* Mobile */
+
+left.addEventListener(
+    "pointerdown",
+    pressLeft
+);
+
+left.addEventListener(
+    "pointerup",
+    releaseLeft
+);
+
+left.addEventListener(
+    "pointercancel",
+    releaseLeft
+);
+
+left.addEventListener(
+    "pointerleave",
+    releaseLeft
+);
+
+
+right.addEventListener(
+    "pointerdown",
+    pressRight
+);
+
+right.addEventListener(
+    "pointerup",
+    releaseRight
+);
+
+right.addEventListener(
+    "pointercancel",
+    releaseRight
+);
+
+right.addEventListener(
+    "pointerleave",
+    releaseRight
+);
+
+
+brake.addEventListener(
+    "pointerdown",
+    pressBrake
+);
+
+brake.addEventListener(
+    "pointerup",
+    releaseBrake
+);
+
+brake.addEventListener(
+    "pointercancel",
+    releaseBrake
+);
+
+brake.addEventListener(
+    "pointerleave",
+    releaseBrake
+);
+
+
+/* Touch the actual game to start */
+
+canvas.addEventListener(
+    "pointerdown",
+    e => {
+
+        e.preventDefault();
+
+        startGame();
+
+    }
+);
+
+
+/* Keyboard */
+
+document.addEventListener(
+    "keydown",
+    e => {
+
+        if (
+            e.code === "ArrowLeft" ||
+            e.code === "KeyA"
+        ) {
+
+            leftPressed = true;
+
+            startGame();
+
+        }
+
+        if (
+            e.code === "ArrowRight" ||
+            e.code === "KeyD"
+        ) {
+
+            rightPressed = true;
+
+            startGame();
+
+        }
+
+        if (
+            e.code === "ArrowDown" ||
+            e.code === "KeyS"
+        ) {
+
+            brakePressed = true;
+
+            startGame();
+
+        }
+
+        if (
+            e.code === "KeyR"
+        ) {
+
+            resetGame();
+
+        }
+
+    }
+);
+
+
+document.addEventListener(
+    "keyup",
+    e => {
+
+        if (
+            e.code === "ArrowLeft" ||
+            e.code === "KeyA"
+        ) {
+
+            leftPressed = false;
+
+        }
+
+        if (
+            e.code === "ArrowRight" ||
+            e.code === "KeyD"
+        ) {
+
+            rightPressed = false;
+
+        }
+
+        if (
+            e.code === "ArrowDown" ||
+            e.code === "KeyS"
+        ) {
+
+            brakePressed = false;
+
+        }
+
+    }
+);
+
+
+resetGame();
+
+requestAnimationFrame(loop);
+
+</script>
+
+</body>
+</html>
