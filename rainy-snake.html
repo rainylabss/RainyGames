@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>Rainy Snake — RainyGames</title>
+
+<style>
+
+body {
+    margin: 0;
+    background: #08090c;
+    color: white;
+    font-family: Arial;
+    text-align: center;
+}
+
+header {
+    padding: 15px;
+    border-bottom: 1px solid #292c34;
+}
+
+button {
+    padding: 10px 16px;
+    background: #181a20;
+    border: 1px solid #333741;
+    color: white;
+    border-radius: 8px;
+}
+
+canvas {
+    max-width: 94vw;
+    width: 400px;
+    height: 400px;
+    margin: 20px auto;
+    display: block;
+    background: #111318;
+    border: 2px solid #333741;
+    border-radius: 12px;
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+<header>
+
+<button onclick="location.href='index.html'">
+RainyGames
+</button>
+
+<h1>Rainy Snake</h1>
+
+<div id="score">
+Score: 0
+</div>
+
+</header>
+
+
+<canvas
+    id="game"
+    width="400"
+    height="400"
+></canvas>
+
+
+<script>
+
+const canvas =
+document.getElementById("game");
+
+const ctx =
+canvas.getContext("2d");
+
+
+const size = 20;
+
+
+let snake;
+
+let food;
+
+let dx;
+
+let dy;
+
+let score;
+
+let over;
+
+
+function start() {
+
+    snake = [
+
+        {
+            x: 200,
+            y: 200
+        },
+
+        {
+            x: 180,
+            y: 200
+        },
+
+        {
+            x: 160,
+            y: 200
+        }
+
+    ];
+
+
+    dx = size;
+
+    dy = 0;
+
+    score = 0;
+
+    over = false;
+
+    food =
+        randomFood();
+
+
+    document.getElementById(
+        "score"
+    ).textContent =
+        "Score: 0";
+
+
+    gameLoop();
+
+}
+
+
+function randomFood() {
+
+    return {
+
+        x:
+            Math.floor(
+                Math.random() * 20
+            ) * size,
+
+        y:
+            Math.floor(
+                Math.random() * 20
+            ) * size
+
+    };
+
+}
+
+
+function gameLoop() {
+
+    if (over) return;
+
+
+    setTimeout(
+        () => {
+
+            clear();
+
+            move();
+
+            drawFood();
+
+            drawSnake();
+
+
+            if (collision()) {
+
+                gameOver();
+
+                return;
+
+            }
+
+
+            gameLoop();
+
+        },
+        100
+    );
+
+}
+
+
+function clear() {
+
+    ctx.fillStyle =
+        "#111318";
+
+    ctx.fillRect(
+        0,
+        0,
+        400,
+        400
+    );
+
+}
+
+
+function drawSnake() {
+
+    snake.forEach(
+        (part, index) => {
+
+            ctx.fillStyle =
+                index === 0
+                    ? "#ffffff"
+                    : "#777d88";
+
+            ctx.fillRect(
+                part.x,
+                part.y,
+                size - 2,
+                size - 2
+            );
+
+        }
+    );
+
+}
+
+
+function drawFood() {
+
+    ctx.fillStyle =
+        "#aaaeb7";
+
+    ctx.fillRect(
+        food.x,
+        food.y,
+        size - 2,
+        size - 2
+    );
+
+}
+
+
+function move() {
+
+    const head = {
+
+        x:
+            snake[0].x + dx,
+
+        y:
+            snake[0].y + dy
+
+    };
+
+
+    snake.unshift(head);
+
+
+    if (
+
+        head.x === food.x &&
+
+        head.y === food.y
+
+    ) {
+
+        score++;
+
+
+        document.getElementById(
+            "score"
+        ).textContent =
+            "Score: " + score;
+
+
+        food =
+            randomFood();
+
+    } else {
+
+        snake.pop();
+
+    }
+
+}
+
+
+function collision() {
+
+    const head =
+        snake[0];
+
+
+    if (
+
+        head.x < 0 ||
+
+        head.x >= 400 ||
+
+        head.y < 0 ||
+
+        head.y >= 400
+
+    ) {
+
+        return true;
+
+    }
+
+
+    for (
+        let i = 1;
+        i < snake.length;
+        i++
+    ) {
+
+        if (
+
+            head.x ===
+                snake[i].x &&
+
+            head.y ===
+                snake[i].y
+
+        ) {
+
+            return true;
+
+        }
+
+    }
+
+
+    return false;
+
+}
+
+
+function gameOver() {
+
+    over = true;
+
+
+    ctx.fillStyle =
+        "rgba(0,0,0,.75)";
+
+    ctx.fillRect(
+        0,
+        0,
+        400,
+        400
+    );
+
+
+    ctx.fillStyle =
+        "white";
+
+    ctx.textAlign =
+        "center";
+
+    ctx.font =
+        "bold 34px Arial";
+
+    ctx.fillText(
+        "GAME OVER",
+        200,
+        190
+    );
+
+
+    ctx.font =
+        "17px Arial";
+
+    ctx.fillText(
+        "Tap to restart",
+        200,
+        230
+    );
+
+}
+
+
+document.addEventListener(
+    "keydown",
+    event => {
+
+        if (
+
+            event.key ===
+                "ArrowUp" &&
+
+            dy === 0
+
+        ) {
+
+            dx = 0;
+
+            dy = -size;
+
+        }
+
+
+        if (
+
+            event.key ===
+                "ArrowDown" &&
+
+            dy === 0
+
+        ) {
+
+            dx = 0;
+
+            dy = size;
+
+        }
+
+
+        if (
+
+            event.key ===
+                "ArrowLeft" &&
+
+            dx === 0
+
+        ) {
+
+            dx = -size;
+
+            dy = 0;
+
+        }
+
+
+        if (
+
+            event.key ===
+                "ArrowRight" &&
+
+            dx === 0
+
+        ) {
+
+            dx = size;
+
+            dy = 0;
+
+        }
+
+    }
+);
+
+
+canvas.onclick = () => {
+
+    if (over) {
+
+        start();
+
+    }
+
+};
+
+
+start();
+
+</script>
+
+</body>
+</html>
