@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>RainyCrash — RainyGames</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: #08090c;
+    color: white;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    overflow: hidden;
+}
+
+header {
+    height: 65px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    border-bottom: 1px solid #252831;
+}
+
+header h1 {
+    font-size: 20px;
+}
+
+.back {
+    background: #191b21;
+    color: white;
+    border: 1px solid #30333b;
+    padding: 9px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+#score {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+canvas {
+    display: block;
+    margin: 20px auto;
+    background: #16181d;
+    border: 2px solid #30343d;
+    border-radius: 12px;
+    max-width: 94vw;
+    touch-action: none;
+}
+
+.controls {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.controls button {
+    width: 100px;
+    height: 55px;
+    border-radius: 12px;
+    border: 1px solid #363a44;
+    background: #191b21;
+    color: white;
+    font-size: 14px;
+}
+
+.info {
+    color: #858a96;
+    font-size: 13px;
+    margin-top: 10px;
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+<header>
+
+<button
+    class="back"
+    onclick="location.href='index.html'"
+>
+RainyGames
+</button>
+
+<h1>RainyCrash</h1>
+
+<div id="score">
+Score: 0
+</div>
+
+</header>
+
+
+<canvas
+    id="game"
+    width="360"
+    height="600"
+></canvas>
+
+
+<div class="controls">
+
+<button id="left">
+LEFT
+</button>
+
+<button id="right">
+RIGHT
+</button>
+
+</div>
+
+
+<p class="info">
+Use the arrow keys or buttons to move.
+</p>
+
+
+<script>
+
+const canvas =
+document.getElementById("game");
+
+const ctx =
+canvas.getContext("2d");
+
+const scoreText =
+document.getElementById("score");
+
+
+let playerLane = 1;
+
+let score = 0;
+
+let speed = 4;
+
+let gameOver = false;
+
+let enemies = [];
+
+let frame = 0;
+
+
+const lanes = [70, 180, 290];
+
+
+function drawRoad() {
+
+    ctx.fillStyle = "#202228";
+
+    ctx.fillRect(
+        35,
+        0,
+        290,
+        canvas.height
+    );
+
+    ctx.strokeStyle = "#777b84";
+
+    ctx.lineWidth = 4;
+
+    ctx.setLineDash([
+        25,
+        25
+    ]);
+
+    ctx.beginPath();
+
+    ctx.moveTo(125, 0);
+
+    ctx.lineTo(
+        125,
+        canvas.height
+    );
+
+    ctx.stroke();
+
+    ctx.beginPath();
+
+    ctx.moveTo(235, 0);
+
+    ctx.lineTo(
+        235,
+        canvas.height
+    );
+
+    ctx.stroke();
+
+    ctx.setLineDash([]);
+
+}
+
+
+function drawPlayer() {
+
+    const x =
+        lanes[playerLane];
+
+    const y = 500;
+
+    ctx.fillStyle = "#ffffff";
+
+    ctx.fillRect(
+        x - 25,
+        y,
+        50,
+        80
+    );
+
+    ctx.fillStyle = "#15171c";
+
+    ctx.fillRect(
+        x - 15,
+        y + 10,
+        30,
+        20
+    );
+
+    ctx.fillRect(
+        x - 15,
+        y + 50,
+        30,
+        18
+    );
+
+}
+
+
+function drawEnemy(enemy) {
+
+    ctx.fillStyle = "#777d88";
+
+    ctx.fillRect(
+        lanes[enemy.lane] - 25,
+        enemy.y,
+        50,
+        80
+    );
+
+    ctx.fillStyle = "#17191e";
+
+    ctx.fillRect(
+        lanes[enemy.lane] - 15,
+        enemy.y + 10,
+        30,
+        20
+    );
+
+}
+
+
+function spawnEnemy() {
+
+    enemies.push({
+
+        lane:
+            Math.floor(
+                Math.random() * 3
+            ),
+
+        y: -100
+
+    });
+
+}
+
+
+function collision(enemy) {
+
+    const ax =
+        lanes[playerLane] - 25;
+
+    const ay = 500;
+
+    const bx =
+        lanes[enemy.lane] - 25;
+
+    const by =
+        enemy.y;
+
+
+    return (
+
+        ax < bx + 50 &&
+
+        ax + 50 > bx &&
+
+        ay < by + 80 &&
+
+        ay + 80 > by
+
+    );
+
+}
+
+
+function gameLoop() {
+
+    if (gameOver) return;
+
+    ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    drawRoad();
+
+    frame++;
+
+
+    if (frame % 70 === 0) {
+
+        spawnEnemy();
+
+    }
+
+
+    enemies.forEach(
+        enemy => {
+
+            enemy.y += speed;
+
+            drawEnemy(enemy);
+
+            if (
+                collision(enemy)
+            ) {
+
+                endGame();
+
+            }
+
+        }
+    );
+
+
+    enemies =
+        enemies.filter(
+            enemy =>
+                enemy.y <
+                canvas.height + 100
+        );
+
+
+    drawPlayer();
+
+
+    score++;
+
+    scoreText.textContent =
+        "Score: " + score;
+
+
+    speed =
+        4 +
+        Math.floor(
+            score / 500
+        ) * 0.5;
+
+
+    requestAnimationFrame(
+        gameLoop
+    );
+
+}
+
+
+function moveLeft() {
+
+    if (
+        playerLane > 0
+    ) {
+
+        playerLane--;
+
+    }
+
+}
+
+
+function moveRight() {
+
+    if (
+        playerLane < 2
+    ) {
+
+        playerLane++;
+
+    }
+
+}
+
+
+function endGame() {
+
+    gameOver = true;
+
+    ctx.fillStyle =
+        "rgba(0,0,0,0.75)";
+
+    ctx.fillRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    ctx.fillStyle = "white";
+
+    ctx.textAlign = "center";
+
+    ctx.font =
+        "bold 38px Arial";
+
+    ctx.fillText(
+        "GAME OVER",
+        canvas.width / 2,
+        270
+    );
+
+    ctx.font =
+        "20px Arial";
+
+    ctx.fillText(
+        "Score: " + score,
+        canvas.width / 2,
+        310
+    );
+
+    ctx.font =
+        "15px Arial";
+
+    ctx.fillText(
+        "Tap the game to restart",
+        canvas.width / 2,
+        350
+    );
+
+}
+
+
+function restart() {
+
+    playerLane = 1;
+
+    score = 0;
+
+    speed = 4;
+
+    enemies = [];
+
+    frame = 0;
+
+    gameOver = false;
+
+    gameLoop();
+
+}
+
+
+document.addEventListener(
+    "keydown",
+    event => {
+
+        if (
+            event.key ===
+            "ArrowLeft"
+        ) {
+
+            moveLeft();
+
+        }
+
+        if (
+            event.key ===
+            "ArrowRight"
+        ) {
+
+            moveRight();
+
+        }
+
+    }
+);
+
+
+document
+    .getElementById("left")
+    .addEventListener(
+        "click",
+        moveLeft
+    );
+
+
+document
+    .getElementById("right")
+    .addEventListener(
+        "click",
+        moveRight
+    );
+
+
+canvas.addEventListener(
+    "click",
+    () => {
+
+        if (gameOver) {
+
+            restart();
+
+        }
+
+    }
+);
+
+
+gameLoop();
+
+</script>
+
+</body>
+</html>
