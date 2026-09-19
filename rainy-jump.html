@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>Rainy Jump — RainyGames</title>
+
+<style>
+
+body {
+    margin: 0;
+    background: #08090c;
+    color: white;
+    font-family: Arial;
+    text-align: center;
+}
+
+header {
+    padding: 15px;
+    border-bottom: 1px solid #292c34;
+}
+
+button {
+    padding: 11px 17px;
+    background: #181a20;
+    border: 1px solid #333741;
+    color: white;
+    border-radius: 8px;
+}
+
+canvas {
+    display: block;
+    margin: 20px auto;
+    max-width: 94%;
+    background: #111318;
+    border: 2px solid #333741;
+    border-radius: 12px;
+    touch-action: none;
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+<header>
+
+<button onclick="location.href='index.html'">
+RainyGames
+</button>
+
+<h1>Rainy Jump</h1>
+
+<div id="score">
+Distance: 0
+</div>
+
+</header>
+
+
+<canvas
+    id="game"
+    width="600"
+    height="400"
+></canvas>
+
+
+<script>
+
+const canvas =
+document.getElementById("game");
+
+const ctx =
+canvas.getContext("2d");
+
+
+let player = {
+
+    x: 100,
+
+    y: 300,
+
+    width: 35,
+
+    height: 35,
+
+    velocity: 0,
+
+    grounded: true
+
+};
+
+
+let obstacles = [];
+
+let distance = 0;
+
+let over = false;
+
+let speed = 4;
+
+
+function jump() {
+
+    if (
+        player.grounded &&
+        !over
+    ) {
+
+        player.velocity = -12;
+
+        player.grounded = false;
+
+    }
+
+}
+
+
+document.addEventListener(
+    "keydown",
+    event => {
+
+        if (
+
+            event.key === " " ||
+
+            event.key === "ArrowUp"
+
+        ) {
+
+            jump();
+
+        }
+
+    }
+);
+
+
+canvas.addEventListener(
+    "click",
+    jump
+);
+
+
+function spawnObstacle() {
+
+    obstacles.push({
+
+        x: 620,
+
+        y: 325,
+
+        width: 30,
+
+        height: 30
+
+    });
+
+}
+
+
+function loop() {
+
+    if (over) return;
+
+
+    ctx.clearRect(
+        0,
+        0,
+        600,
+        400
+    );
+
+
+    ctx.fillStyle =
+        "#17191f";
+
+    ctx.fillRect(
+        0,
+        0,
+        600,
+        400
+    );
+
+
+    ctx.fillStyle =
+        "#555b66";
+
+    ctx.fillRect(
+        0,
+        360,
+        600,
+        40
+    );
+
+
+    player.velocity += 0.6;
+
+    player.y +=
+        player.velocity;
+
+
+    if (
+        player.y >= 325
+    ) {
+
+        player.y = 325;
+
+        player.velocity = 0;
+
+        player.grounded = true;
+
+    }
+
+
+    ctx.fillStyle =
+        "white";
+
+    ctx.fillRect(
+        player.x,
+        player.y,
+        player.width,
+        player.height
+    );
+
+
+    if (
+        Math.random() < 0.018
+    ) {
+
+        spawnObstacle();
+
+    }
+
+
+    obstacles.forEach(
+        obstacle => {
+
+            obstacle.x -= speed;
+
+
+            ctx.fillStyle =
+                "#858b96";
+
+            ctx.fillRect(
+                obstacle.x,
+                obstacle.y,
+                obstacle.width,
+                obstacle.height
+            );
+
+
+            if (
+
+                player.x <
+                    obstacle.x +
+                    obstacle.width &&
+
+                player.x +
+                    player.width >
+                    obstacle.x &&
+
+                player.y <
+                    obstacle.y +
+                    obstacle.height &&
+
+                player.y +
+                    player.height >
+                    obstacle.y
+
+            ) {
+
+                gameOver();
+
+            }
+
+        }
+    );
+
+
+    obstacles =
+        obstacles.filter(
+            obstacle =>
+                obstacle.x > -50
+        );
+
+
+    distance++;
+
+
+    document.getElementById(
+        "score"
+    ).textContent =
+        "Distance: " + distance;
+
+
+    speed =
+        4 +
+        Math.floor(
+            distance / 500
+        );
+
+
+    requestAnimationFrame(
+        loop
+    );
+
+}
+
+
+function gameOver() {
+
+    over = true;
+
+
+    ctx.fillStyle =
+        "rgba(0,0,0,.75)";
+
+    ctx.fillRect(
+        0,
+        0,
+        600,
+        400
+    );
+
+
+    ctx.fillStyle =
+        "white";
+
+    ctx.textAlign =
+        "center";
+
+    ctx.font =
+        "bold 38px Arial";
+
+    ctx.fillText(
+        "GAME OVER",
+        300,
+        185
+    );
+
+
+    ctx.font =
+        "18px Arial";
+
+    ctx.fillText(
+        "Tap to restart",
+        300,
+        225
+    );
+
+}
+
+
+canvas.addEventListener(
+    "click",
+    () => {
+
+        if (over) {
+
+            player.y = 325;
+
+            player.velocity = 0;
+
+            player.grounded = true;
+
+            obstacles = [];
+
+            distance = 0;
+
+            speed = 4;
+
+            over = false;
+
+            loop();
+
+        }
+
+    }
+);
+
+
+loop();
+
+</script>
+
+</body>
+</html>
