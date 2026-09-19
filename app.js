@@ -1,11 +1,11 @@
 const games = [
 
     {
-        name: "RainyCrash",
+        name: "Rainkist Crash",
         category: "Racing",
         type: "car",
-        file: "rainy-crash.html",
-        description: "Drive and survive the traffic."
+        file: "rainkist-crash.html",
+        description: "Race downhill, fly through the air and survive the crash."
     },
 
     {
@@ -14,14 +14,6 @@ const games = [
         type: "car",
         file: "rainy-racer.html",
         description: "Race to the finish."
-    },
-
-    {
-        name: "Rainy Snake",
-        category: "Arcade",
-        type: "quick",
-        file: "rainy-snake.html",
-        description: "Eat, grow and survive."
     },
 
     {
