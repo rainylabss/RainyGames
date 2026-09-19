@@ -38,6 +38,14 @@ const games = [
         type: "quick",
         file: "rainy-jump.html",
         description: "Jump as far as you can."
+    },
+
+    {
+        name: "RainyDino",
+        category: "Arcade",
+        type: "quick",
+        file: "rainy-dino.html",
+        description: "Run, jump and survive as the speed increases."
     }
 
 ];
@@ -46,7 +54,10 @@ const games = [
 function makeCard(game) {
 
     return `
-        <div class="game-card" onclick="openGame('${game.file}')">
+        <div
+            class="game-card"
+            onclick="openGame('${game.file}')"
+        >
 
             <div class="game-card-top"></div>
 
@@ -64,7 +75,8 @@ function makeCard(game) {
 
 function render(list, elementId) {
 
-    const element = document.getElementById(elementId);
+    const element =
+        document.getElementById(elementId);
 
     if (!element) return;
 
@@ -85,15 +97,22 @@ function render(list, elementId) {
 
 function renderHome() {
 
-    render(games, "gameGrid");
+    render(
+        games,
+        "gameGrid"
+    );
 
     render(
-        games.filter(game => game.type === "car"),
+        games.filter(
+            game => game.type === "car"
+        ),
         "carGrid"
     );
 
     render(
-        games.filter(game => game.type === "quick"),
+        games.filter(
+            game => game.type === "quick"
+        ),
         "quickGrid"
     );
 
@@ -106,15 +125,20 @@ function openGame(file) {
 
     let recent =
         JSON.parse(
-            localStorage.getItem("rainyRecent") || "[]"
+            localStorage.getItem(
+                "rainyRecent"
+            ) || "[]"
         );
 
     recent =
-        recent.filter(game => game !== file);
+        recent.filter(
+            game => game !== file
+        );
 
     recent.unshift(file);
 
-    recent = recent.slice(0, 6);
+    recent =
+        recent.slice(0, 6);
 
     localStorage.setItem(
         "rainyRecent",
@@ -130,17 +154,26 @@ function renderRecent() {
 
     const recent =
         JSON.parse(
-            localStorage.getItem("rainyRecent") || "[]"
+            localStorage.getItem(
+                "rainyRecent"
+            ) || "[]"
         );
 
     const recentGames =
         recent
-            .map(file =>
-                games.find(game => game.file === file)
+            .map(
+                file =>
+                    games.find(
+                        game =>
+                            game.file === file
+                    )
             )
             .filter(Boolean);
 
-    render(recentGames, "recentGrid");
+    render(
+        recentGames,
+        "recentGrid"
+    );
 
 }
 
@@ -149,19 +182,33 @@ function searchGames() {
 
     const query =
         document
-            .getElementById("searchInput")
+            .getElementById(
+                "searchInput"
+            )
             .value
             .toLowerCase()
             .trim();
 
     const results =
-        games.filter(game =>
-            game.name.toLowerCase().includes(query) ||
-            game.category.toLowerCase().includes(query) ||
-            game.description.toLowerCase().includes(query)
+        games.filter(
+            game =>
+                game.name
+                    .toLowerCase()
+                    .includes(query) ||
+
+                game.category
+                    .toLowerCase()
+                    .includes(query) ||
+
+                game.description
+                    .toLowerCase()
+                    .includes(query)
         );
 
-    render(results, "gameGrid");
+    render(
+        results,
+        "gameGrid"
+    );
 
 }
 
@@ -170,28 +217,39 @@ function showCategory(category) {
 
     if (category === "All") {
 
-        render(games, "gameGrid");
+        render(
+            games,
+            "gameGrid"
+        );
 
         return;
 
     }
 
     const filtered =
-        games.filter(game =>
-            game.category === category
+        games.filter(
+            game =>
+                game.category === category
         );
 
-    render(filtered, "gameGrid");
+    render(
+        filtered,
+        "gameGrid"
+    );
 
     window.scrollTo({
 
         top:
             document
-                .getElementById("gameGrid")
+                .getElementById(
+                    "gameGrid"
+                )
                 .getBoundingClientRect()
                 .top
-            + window.scrollY
-            - 100,
+            +
+            window.scrollY
+            -
+            100,
 
         behavior: "smooth"
 
@@ -202,7 +260,8 @@ function showCategory(category) {
 
 function goHome() {
 
-    window.location.href = "index.html";
+    window.location.href =
+        "index.html";
 
 }
 
